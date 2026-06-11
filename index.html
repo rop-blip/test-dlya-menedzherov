@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Тест для менеджеров отдела продаж по книге Д. Ткаченко — «Паркс-Инжиниринг»</title>
     <style>
+        /* (стили остались без изменений, как в предыдущей версии) */
         :root {
             --bg: #f2f4f8;
             --card-bg: #ffffff;
@@ -372,7 +373,6 @@
     (function() {
         const MAX_ATTEMPTS = 3;
         const TIME_LIMIT_SEC = 30 * 60;
-        // ВАЖНО: замените на свой URL скрипта Google Apps Script (тот, что вы получили)
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwAgE4Q8219JA_fdtHmukHh4F6RrtgDSdsbkRYHUtzkI0ScI9DGzI5a_x-Kf9VvqMJF/exec';
         
         let timeLeft = TIME_LIMIT_SEC;
@@ -403,6 +403,7 @@
 
         const STORAGE_KEY = 'parxeng_quiz_result';
 
+        // Все 40 вопросов
         const quizData = [
             { question: "1. Вы звоните в компанию впервые. Не знаете, кто отвечает за закупки металлообработки. Секретарь снял трубку. Ваши действия:", options: ["«Добрый день! От вас был звонок, коллеги записали, что звонил снабженец по вопросу изготовления деталей по чертежам. Соедините с ним!»","«Здравствуйте, я из компании \"Паркс-Инжиниринг\", мы занимаемся металлообработкой. Мне нужен тот, кто занимается закупками. Соедините».","«Девушка, как зовут вашего начальника отдела снабжения?»","«Здравствуйте, пришлите, пожалуйста, почту, я отправлю коммерческое предложение»."], correct: 0 },
             { question: "2. Секретарь: «По какому вопросу вы звоните?» Какой ответ позволит не раскрывать суть и перевести разговор в нужное русло?", options: ["«Это конфиденциально, я могу обсуждать только с руководителем».","«По вопросу поставок металлоизделий».","«Мы делаем детали по чертежам. Вам это срочно?»","«Именно поэтому я и хочу задать два узкопрофильных вопроса вашему главному инженеру — чтобы точно знать, сможем ли мы быть вам полезны. Соедините с ним!»"], correct: 3 },
@@ -496,26 +497,6 @@
                 ${result.timeUsed}<br>
                 <small>Завершён: ${new Date(result.date).toLocaleString()}</small>
             `;
-
-            resendEmailBtn.onclick = function() {
-                const subject = 'Результат теста: ' + result.name + ' — ' + result.score + '/' + result.total;
-                const body = result.name + ' завершил(а) тест по книге Д. Ткаченко.\n\nРезультат: ' + result.score + ' из ' + result.total + ' правильных ответов.\n' + result.timeUsed + '\n\nДата: ' + new Date(result.date).toLocaleString();
-                window.open('mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), '_blank');
-            };
-
-            resendCopyBtn.onclick = function() {
-                const text = result.name + ' — результат: ' + result.score + ' из ' + result.total + '. ' + result.timeUsed;
-                navigator.clipboard.writeText(text).then(() => {
-                    alert('Результат скопирован в буфер обмена');
-                });
-            };
-
-            resetSavedBtn.onclick = function() {
-                if (confirm('Вы уверены, что хотите пройти тест заново? Предыдущий результат будет удалён.')) {
-                    localStorage.removeItem(STORAGE_KEY);
-                    location.reload();
-                }
-            };
         }
 
         const savedResult = loadSavedResult();
@@ -523,6 +504,25 @@
             userNameInput.value = savedResult.name;
             showSavedResultScreen(savedResult);
             timerDisplay.textContent = '⏱ завершён';
+            
+            // Назначаем обработчики для кнопок в сохраненном результате
+            resendEmailBtn.onclick = function() {
+                const subject = 'Результат теста: ' + savedResult.name + ' — ' + savedResult.score + '/' + savedResult.total;
+                const body = savedResult.name + ' завершил(а) тест по книге Д. Ткаченко.\n\nРезультат: ' + savedResult.score + ' из ' + savedResult.total + ' правильных ответов.\n' + savedResult.timeUsed + '\n\nДата: ' + new Date(savedResult.date).toLocaleString();
+                window.open('mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), '_blank');
+            };
+            resendCopyBtn.onclick = function() {
+                const text = savedResult.name + ' — результат: ' + savedResult.score + ' из ' + savedResult.total + '. ' + savedResult.timeUsed;
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Результат скопирован в буфер обмена');
+                });
+            };
+            resetSavedBtn.onclick = function() {
+                if (confirm('Вы уверены, что хотите пройти тест заново? Предыдущий результат будет удалён.')) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    location.reload();
+                }
+            };
             return;
         }
 
@@ -712,6 +712,9 @@
             updateProgress();
         }
 
+        // Назначаем обработчики событий
+        checkBtn.addEventListener('click', checkAnswers);
+        resetBtn.addEventListener('click', resetQuiz);
         copyBtn.addEventListener('click', function() {
             const name = userNameInput.value.trim();
             const text = name + ' — результат: ' + finalScore + ' из ' + quizData.length + '. ' + timeUsedFormatted;
@@ -720,12 +723,24 @@
                 setTimeout(() => { copyHint.style.display = 'none'; }, 2000);
             });
         });
-
         emailBtn.addEventListener('click', function() {
             const name = userNameInput.value.trim();
             const subject = 'Результат теста: ' + name + ' — ' + finalScore + '/40';
             const body = name + ' завершил(а) тест по книге Д. Ткаченко.\n\nРезультат: ' + finalScore + ' из 40 правильных ответов.\n' + timeUsedFormatted + '\n\nДата: ' + new Date().toLocaleString();
             window.open('mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), '_blank');
+        });
+        startBtn.addEventListener('click', function() {
+            const name = userNameInput.value.trim();
+            if (!name) {
+                alert('Пожалуйста, введите ваше имя перед началом теста.');
+                return;
+            }
+            startArea.style.display = 'none';
+            progressArea.style.display = 'block';
+            attemptInfo.style.display = 'block';
+            quizContainer.style.display = 'block';
+            buttonsArea.style.display = 'flex';
+            startTimer();
         });
 
         function launchConfetti() {
@@ -764,20 +779,6 @@
 
         renderQuiz();
         updateTimerDisplay();
-
-        startBtn.addEventListener('click', function() {
-            const name = userNameInput.value.trim();
-            if (!name) {
-                alert('Пожалуйста, введите ваше имя перед началом теста.');
-                return;
-            }
-            startArea.style.display = 'none';
-            progressArea.style.display = 'block';
-            attemptInfo.style.display = 'block';
-            quizContainer.style.display = 'block';
-            buttonsArea.style.display = 'flex';
-            startTimer();
-        });
     })();
 </script>
 </body>
