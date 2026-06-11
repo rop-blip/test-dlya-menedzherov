@@ -331,14 +331,12 @@
         </div>
     </div>
 
-    <!-- Стартовый экран -->
     <div class="start-area" id="startArea">
         <h2 style="margin-bottom:15px; color:#1e293b;">Тест для менеджеров отдела продаж по книге Д. Ткаченко</h2>
         <button class="btn-start" id="startBtn">▶ Начать тестирование</button>
         <p style="color: var(--text-secondary); margin-top: 10px;">Нажмите, чтобы запустить тест. Время будет ограничено 30 минутами.</p>
     </div>
 
-    <!-- Экран с сохранённым результатом -->
     <div class="saved-result-area" id="savedResultArea">
         <h2>🎯 Вы уже прошли тест</h2>
         <div class="result-details" id="savedResultDetails"></div>
@@ -374,6 +372,8 @@
     (function() {
         const MAX_ATTEMPTS = 3;
         const TIME_LIMIT_SEC = 30 * 60;
+        // ВАЖНО: замените на свой URL скрипта Google Apps Script (тот, что вы получили)
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwAgE4Q8219JA_fdtHmukHh4F6RrtgDSdsbkRYHUtzkI0ScI9DGzI5a_x-Kf9VvqMJF/exec';
         
         let timeLeft = TIME_LIMIT_SEC;
         let timerStarted = false;
@@ -403,7 +403,6 @@
 
         const STORAGE_KEY = 'parxeng_quiz_result';
 
-        // Все 40 вопросов (перемешанные, равномерное распределение правильных ответов)
         const quizData = [
             { question: "1. Вы звоните в компанию впервые. Не знаете, кто отвечает за закупки металлообработки. Секретарь снял трубку. Ваши действия:", options: ["«Добрый день! От вас был звонок, коллеги записали, что звонил снабженец по вопросу изготовления деталей по чертежам. Соедините с ним!»","«Здравствуйте, я из компании \"Паркс-Инжиниринг\", мы занимаемся металлообработкой. Мне нужен тот, кто занимается закупками. Соедините».","«Девушка, как зовут вашего начальника отдела снабжения?»","«Здравствуйте, пришлите, пожалуйста, почту, я отправлю коммерческое предложение»."], correct: 0 },
             { question: "2. Секретарь: «По какому вопросу вы звоните?» Какой ответ позволит не раскрывать суть и перевести разговор в нужное русло?", options: ["«Это конфиденциально, я могу обсуждать только с руководителем».","«По вопросу поставок металлоизделий».","«Мы делаем детали по чертежам. Вам это срочно?»","«Именно поэтому я и хочу задать два узкопрофильных вопроса вашему главному инженеру — чтобы точно знать, сможем ли мы быть вам полезны. Соедините с ним!»"], correct: 3 },
@@ -446,6 +445,23 @@
             { question: "39. Вы уже несколько раз общались с клиентом, но прогресса нет. Хотите понять, что идёт не так. Ваш вопрос:", options: ["«Наверное, мы вам не подходим, буду закругляться».","«Что я делаю не так? Почему мы до сих пор не провели пробный заказ?»","«Я предлагаю скидку 10%, чтобы ускорить решение».","«Давайте я перезвоню, когда у вас появится определённость»."], correct: 1 },
             { question: "40. Клиент: «На данный момент мы не планируем менять поставщика». Вы хотите оставить дверь открытой. Ваш вопрос:", options: ["«Жаль, я позвоню через полгода».","«Что должно измениться, чтобы вы начали с нами работать?»","«У нас есть специальные условия для новых клиентов, может, рассмотрите?»","«Тогда, может, возьмёте пробную партию бесплатно?»"], correct: 1 }
         ];
+
+        // Отправка результата в Google Таблицу
+        function sendResultToSheet(name, score, timeUsed) {
+            const data = new URLSearchParams();
+            data.append('name', name);
+            data.append('score', score);
+            data.append('total', quizData.length);
+            data.append('timeUsed', timeUsed);
+            data.append('date', new Date().toLocaleString());
+            
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: data
+            }).catch(function(err) {
+                console.log('Автоотправка не сработала, но можно скопировать результат');
+            });
+        }
 
         function saveResult(name, score, timeUsed) {
             const result = {
@@ -575,6 +591,7 @@
             showFinalButtons();
             updateProgress();
             saveResult(name, score, timeUsedFormatted);
+            sendResultToSheet(name, score, timeUsedFormatted);
         }
 
         function getTimeUsed() {
@@ -657,6 +674,7 @@
                 showFinalButtons();
                 updateProgress();
                 saveResult(name, score, timeUsedFormatted);
+                sendResultToSheet(name, score, timeUsedFormatted);
             } else {
                 resultDiv.textContent = name + ', ваш результат: ' + score + ' из ' + quizData.length + '. Осталось попыток: ' + attemptsLeft + '. Проверьте ещё раз перед финалом.';
                 copyBtn.style.display = 'none';
