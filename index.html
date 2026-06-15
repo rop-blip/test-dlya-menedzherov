@@ -143,7 +143,6 @@
         .btn-reset { background: transparent; border: 1px solid var(--border); color: var(--text); }
         .btn-reset:hover:not(:disabled) { background: #f1f5f9; }
         .btn-copy { background: #16a34a; color: white; display: none; }
-        .btn-email { background: #0ea5e9; color: white; display: none; }
         .btn-finish { background: #e67e22; color: white; display: none; }
         .result { text-align: center; font-size: 1.4em; font-weight: 700; margin: 20px 0 10px; }
         .copy-hint { font-size: 0.8em; color: var(--text-secondary); text-align: center; display: none; }
@@ -185,7 +184,6 @@
         <h2>🎯 Вы уже прошли тест</h2>
         <div class="result-details" id="savedResultDetails"></div>
         <div style="margin-top:15px;">
-            <button class="btn btn-email" id="resendEmailBtn">📧 Отправить результат повторно</button>
             <button class="btn btn-copy" id="resendCopyBtn">📋 Скопировать результат</button>
         </div>
         <button class="btn btn-reset" style="margin-top:15px;" id="resetSavedBtn">🔄 Пройти тест заново</button>
@@ -202,12 +200,11 @@
         <button class="btn btn-reset" id="resetBtn">🔄 Сбросить</button>
         <button class="btn btn-finish" id="finishBtn">🏁 Завершить тест сейчас</button>
         <button class="btn btn-copy" id="copyBtn">📋 Скопировать результат</button>
-        <button class="btn btn-email" id="emailBtn">📧 Отправить результат</button>
     </div>
     <div class="result" id="result"></div>
     <div class="copy-hint" id="copyHint">Результат скопирован в буфер обмена</div>
     <div class="send-instruction" id="sendInstruction">
-        ⚠️ Не забудьте отправить результат руководителю! <br> Нажмите кнопку <strong>«📧 Отправить результат»</strong> или скопируйте и пришлите вручную.
+        ⚠️ Не забудьте отправить результат руководителю! <br> Нажмите кнопку <strong>«📋 Скопировать результат»</strong> и отправьте его РОПу в личные сообщения 1С.
     </div>
 </div>
 <canvas id="confetti"></canvas>
@@ -232,7 +229,6 @@
         const resetBtn = document.getElementById('resetBtn');
         const finishBtn = document.getElementById('finishBtn');
         const copyBtn = document.getElementById('copyBtn');
-        const emailBtn = document.getElementById('emailBtn');
         const resultDiv = document.getElementById('result');
         const copyHint = document.getElementById('copyHint');
         const sendInstruction = document.getElementById('sendInstruction');
@@ -240,17 +236,16 @@
         const progressText = document.getElementById('progressText');
         const userNameInput = document.getElementById('userName');
         const startBtn = document.getElementById('startBtn');
-        const resendEmailBtn = document.getElementById('resendEmailBtn');
         const resendCopyBtn = document.getElementById('resendCopyBtn');
         const resetSavedBtn = document.getElementById('resetSavedBtn');
         const savedResultDetails = document.getElementById('savedResultDetails');
         const STORAGE_KEY = 'parxeng_quiz_result';
 
-        // Все вопросы с выровненными по длине ответами
+        // Все 40 вопросов с тщательно выровненными по длине ответами
         const quizData = [
-            { question: "1. Вы звоните в компанию впервые. Не знаете, кто отвечает за закупки металлообработки. Секретарь снял трубку. Ваши действия:", options: ["«Добрый день! От вас был звонок, коллеги записали, что звонил снабженец по вопросу изготовления деталей по чертежам. Соедините с ним!»","«Здравствуйте, я из компании \"Паркс-Инжиниринг\", мы занимаемся металлообработкой. Мне нужен тот, кто занимается закупками. Соедините».","«Девушка, как зовут вашего начальника отдела снабжения? Подскажите, пожалуйста, его имя и отчество, чтобы я мог к нему обратиться».","«Здравствуйте, пришлите, пожалуйста, почту, я отправлю коммерческое предложение на вашу организацию»."], correct: 0 },
-            { question: "2. Секретарь: «По какому вопросу вы звоните?» Какой ответ позволит не раскрывать суть и перевести разговор в нужное русло?", options: ["«Это конфиденциально, я могу обсуждать только с руководителем лично».","«По вопросу поставок металлоизделий и комплектующих для производственных нужд».","«Мы делаем детали по чертежам. Вам это срочно? Могу перезвонить позже».","«Именно поэтому я и хочу задать два узкопрофильных вопроса вашему главному инженеру — чтобы точно знать, сможем ли мы быть вам полезны. Соедините с ним!»"], correct: 3 },
-            { question: "3. Вы пытались применить приём с именем, но ошиблись. Секретарь: «У нас такого нет». Ваш следующий шаг:", options: ["«А как правильно имя и отчество?.. А, точно! Не туда посмотрел. Соедините с ним!»","Извиниться и положить трубку.","«Тогда дайте мне любого сотрудника, кто на месте, разберёмся в ситуации».","«Извините, ошибся. Тогда я перезвоню попозже, когда уточню имя»."], correct: 0 },
+            { question: "1. Вы звоните в компанию впервые. Не знаете, кто отвечает за закупки металлообработки. Секретарь снял трубку. Ваши действия:", options: ["«Добрый день! От вас был звонок, коллеги записали, что звонил снабженец по вопросу изготовления деталей по чертежам. Соедините с ним!»","«Здравствуйте, я из компании \"Паркс-Инжиниринг\", мы занимаемся металлообработкой. Мне нужен тот, кто отвечает за закупки. Соедините, пожалуйста».","«Девушка, как зовут вашего начальника отдела снабжения? Подскажите, пожалуйста, его имя и отчество, чтобы я мог к нему обратиться».","«Здравствуйте, пришлите, пожалуйста, почту, я отправлю коммерческое предложение на вашу организацию. Спасибо»."], correct: 0 },
+            { question: "2. Секретарь: «По какому вопросу вы звоните?» Какой ответ позволит не раскрывать суть и перевести разговор в нужное русло?", options: ["«Это конфиденциальный вопрос, я могу обсуждать его только с руководителем лично, без посредников».","«По вопросу поставок металлоизделий и комплектующих для производственных нужд вашего предприятия».","«Мы делаем детали по чертежам. Вам это срочно? Могу перезвонить позже, когда будет удобнее».","«Именно поэтому я и хочу задать два узкопрофильных вопроса вашему главному инженеру — чтобы точно знать, сможем ли мы быть вам полезны. Соедините с ним!»"], correct: 3 },
+            { question: "3. Вы пытались применить приём с именем, но ошиблись. Секретарь: «У нас такого нет». Ваш следующий шаг:", options: ["«А как правильно имя и отчество?.. А, точно! Не туда посмотрел. Соедините с ним!»","Извиниться и положить трубку.","«Тогда дайте мне любого сотрудника, кто на месте, разберёмся в ситуации».","«Извините, ошибся. Тогда я перезвоню попозже, когда уточню имя и отчество»."], correct: 0 },
             { question: "4. В компании строгий регламент: «Руководитель ни с кем не соединяется без предварительной договорённости». Ваш ответ:", options: ["«Я всего лишь предлагаю руководству возможность сравнить условия и получить ещё одного партнёра. От этого ваша компания только выиграет. Переключите на снабжение!»","«Хорошо, тогда я оставлю свой номер, пусть перезвонит, когда будет удобно».","«Тогда дайте мне его прямой номер, я договорюсь сам, чтобы не отвлекать вас».","«Я буду ждать на линии, пока он освободится, никуда не денусь»."], correct: 0 },
             { question: "5. Секретарь жёстко фильтрует: «Директор занят, оставьте номер, он перезвонит». Ваш лучший ответ:", options: ["«Спасибо, я перезвоню в другое время, чтобы не отвлекать».","«Мне сказали, что он ждёт моего звонка, это важно и срочно».","«Наверняка вам запрещено соединять с теми, кто звонит по пустякам. Я не предлагаю купить у меня канцтовары или салфетки — я звоню по вопросу изготовления высокоточных деталей из любого металла и инженерных пластмасс. Соедините с главным инженером!»","«Тогда дайте его мобильный, я позвоню лично, чтобы решить вопрос напрямую»."], correct: 2 },
             { question: "6. Секретарь: «Я не могу вас соединить, таковы правила». Вы хотите «продавить» соединение. Что скажете?", options: ["«Это глупые правила, я буду жаловаться вашему руководству на некомпетентность».","«Тогда соедините с его заместителем, это тоже подойдёт для начала».","«А что мне всё-таки нужно сделать, чтобы услышать руководителя? Как можно обойти эти правила?»","«Я подожду на линии, никуда не тороплюсь, пусть освободится»."], correct: 2 },
@@ -290,7 +285,6 @@
             { question: "40. Клиент: «На данный момент мы не планируем менять поставщика». Вы хотите оставить дверь открытой. Ваш вопрос:", options: ["«Жаль, я позвоню через полгода, может, что-то изменится».","«Что должно измениться, чтобы вы начали с нами работать?»","«У нас есть специальные условия для новых клиентов, может, рассмотрите их?»","«Тогда, может, возьмёте пробную партию бесплатно?»"], correct: 1 }
         ];
 
-        // Отправка результата в Google Таблицу
         function sendResultToSheet(name, score, timeUsed) {
             const data = new URLSearchParams();
             data.append('name', name);
@@ -302,13 +296,7 @@
         }
 
         function saveResult(name, score, timeUsed) {
-            const result = {
-                name,
-                score,
-                total: quizData.length,
-                timeUsed,
-                date: new Date().toISOString()
-            };
+            const result = { name, score, total: quizData.length, timeUsed, date: new Date().toISOString() };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(result));
         }
 
@@ -327,12 +315,7 @@
             copyHint.style.display = 'none';
             sendInstruction.style.display = 'none';
             savedResultArea.style.display = 'block';
-            savedResultDetails.innerHTML = `
-                <strong>${result.name}</strong><br>
-                Результат: ${result.score} из ${result.total} правильных ответов.<br>
-                ${result.timeUsed}<br>
-                <small>Завершён: ${new Date(result.date).toLocaleString()}</small>
-            `;
+            savedResultDetails.innerHTML = `<strong>${result.name}</strong><br>Результат: ${result.score} из ${result.total} правильных ответов.<br>${result.timeUsed}<br><small>Завершён: ${new Date(result.date).toLocaleString()}</small>`;
         }
 
         const savedResult = loadSavedResult();
@@ -340,16 +323,9 @@
             userNameInput.value = savedResult.name;
             showSavedResultScreen(savedResult);
             timerDisplay.textContent = '⏱ завершён';
-            resendEmailBtn.onclick = () => {
-                const subject = 'Результат теста: ' + savedResult.name + ' — ' + savedResult.score + '/' + savedResult.total;
-                const body = savedResult.name + ' завершил(а) тест по книге Д. Ткаченко.\n\nРезультат: ' + savedResult.score + ' из ' + savedResult.total + ' правильных ответов.\n' + savedResult.timeUsed + '\n\nДата: ' + new Date(savedResult.date).toLocaleString();
-                window.open('mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), '_blank');
-                navigator.clipboard.writeText(body);
-                alert('Текст письма скопирован. Если почтовый клиент не открылся, вставьте сообщение вручную (Ctrl+V).');
-            };
             resendCopyBtn.onclick = () => {
                 const text = savedResult.name + ' — результат: ' + savedResult.score + ' из ' + savedResult.total + '. ' + savedResult.timeUsed;
-                navigator.clipboard.writeText(text).then(() => alert('Результат скопирован в буфер обмена'));
+                navigator.clipboard.writeText(text).then(() => alert('Результат скопирован в буфер обмена. Отправьте его РОПу в личные сообщения 1С.'));
             };
             resetSavedBtn.onclick = () => {
                 if (confirm('Вы уверены, что хотите пройти тест заново? Предыдущий результат будет удалён.')) {
@@ -381,10 +357,7 @@
             timerInterval = setInterval(() => {
                 timeLeft--;
                 updateTimerDisplay();
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    forceSubmit('Время вышло!');
-                }
+                if (timeLeft <= 0) { clearInterval(timerInterval); forceSubmit('Время вышло!'); }
             }, 1000);
         }
 
@@ -411,12 +384,8 @@
             }
             const name = userNameInput.value.trim();
             resultDiv.innerHTML = (name || 'Менеджер') + ': ' + score + ' из ' + quizData.length + ' ⏰ ' + timeUsedFormatted + '. ' + reason;
-            if (score >= 32) {
-                resultDiv.innerHTML += ' 🎉 Отлично! Тест пройден.';
-                launchConfetti();
-            } else {
-                resultDiv.innerHTML += ' 📚 Стоит повторить материал.';
-            }
+            if (score >= 32) { resultDiv.innerHTML += ' 🎉 Отлично! Тест пройден.'; launchConfetti(); }
+            else { resultDiv.innerHTML += ' 📚 Стоит повторить материал.'; }
             showFinalButtons();
             updateProgress();
             saveResult(name, score, timeUsedFormatted);
@@ -433,16 +402,10 @@
         function renderQuiz() {
             let html = '';
             quizData.forEach((item, index) => {
-                html += `<div class="question-block" id="qblock-${index}">
-                    <div class="question-num">Вопрос ${index+1}</div>
-                    <div class="question-text">${item.question}</div>
-                    <div class="options">`;
+                html += `<div class="question-block" id="qblock-${index}"><div class="question-num">Вопрос ${index+1}</div><div class="question-text">${item.question}</div><div class="options">`;
                 const letters = ['А','Б','В','Г'];
                 item.options.forEach((opt, optIndex) => {
-                    html += `<div class="option">
-                        <input type="radio" name="q${index}" id="q${index}_${optIndex}" value="${optIndex}">
-                        <label for="q${index}_${optIndex}">${letters[optIndex]}) ${opt}</label>
-                    </div>`;
+                    html += `<div class="option"><input type="radio" name="q${index}" id="q${index}_${optIndex}" value="${optIndex}"><label for="q${index}_${optIndex}">${letters[optIndex]}) ${opt}</label></div>`;
                 });
                 html += `</div></div>`;
             });
@@ -453,14 +416,11 @@
         function updateProgress() {
             const total = quizData.length;
             let answered = 0;
-            for (let i = 0; i < total; i++) {
-                if (document.querySelector(`input[name="q${i}"]:checked`)) answered++;
-            }
+            for (let i = 0; i < total; i++) { if (document.querySelector(`input[name="q${i}"]:checked`)) answered++; }
             const pct = Math.round((answered / total) * 100);
             progressFill.style.width = pct + '%';
             progressText.textContent = answered + ' из ' + total + ' вопросов';
         }
-
         document.addEventListener('change', updateProgress);
 
         function checkAnswers() {
@@ -475,96 +435,63 @@
             attemptsLeft--;
             attemptInfo.textContent = 'Осталось попыток: ' + attemptsLeft;
             resultDiv.textContent = name + ', ваш результат: ' + score + ' из ' + quizData.length;
-
             if (attemptsLeft === 0) {
-                finalScore = score;
-                testCompleted = true;
-                checkBtn.disabled = true;
-                finishBtn.style.display = 'none';
-                clearInterval(timerInterval);
-                timeUsedFormatted = getTimeUsed();
+                finalScore = score; testCompleted = true; checkBtn.disabled = true; finishBtn.style.display = 'none';
+                clearInterval(timerInterval); timeUsedFormatted = getTimeUsed();
                 for (let i = 0; i < quizData.length; i++) {
                     const block = document.getElementById('qblock-'+i);
                     const sel = document.querySelector(`input[name="q${i}"]:checked`);
                     if (sel && parseInt(sel.value) === quizData[i].correct) block.classList.add('correct-highlight');
                     else block.classList.add('wrong-highlight');
                 }
-                if (score >= 32) {
-                    resultDiv.innerHTML = name + ', ваш результат: ' + score + ' из ' + quizData.length + ' ⏰ ' + timeUsedFormatted + ' 🎉 Отлично! Тест пройден.';
-                    launchConfetti();
-                } else {
-                    resultDiv.innerHTML = name + ', ваш результат: ' + score + ' из ' + quizData.length + ' ⏰ ' + timeUsedFormatted + ' 📚 Стоит повторить материал.';
-                }
+                if (score >= 32) { resultDiv.innerHTML = name + ', ваш результат: ' + score + ' из ' + quizData.length + ' ⏰ ' + timeUsedFormatted + ' 🎉 Отлично! Тест пройден.'; launchConfetti(); }
+                else { resultDiv.innerHTML = name + ', ваш результат: ' + score + ' из ' + quizData.length + ' ⏰ ' + timeUsedFormatted + ' 📚 Стоит повторить материал.'; }
                 showFinalButtons();
                 updateProgress();
                 saveResult(name, score, timeUsedFormatted);
                 sendResultToSheet(name, score, timeUsedFormatted);
             } else {
                 resultDiv.textContent = name + ', ваш результат: ' + score + ' из ' + quizData.length + '. Осталось попыток: ' + attemptsLeft + '. Проверьте ещё раз перед финалом.';
-                copyBtn.style.display = 'none';
-                emailBtn.style.display = 'none';
-                sendInstruction.style.display = 'none';
-                finishBtn.style.display = 'inline-block';
+                copyBtn.style.display = 'none'; sendInstruction.style.display = 'none'; finishBtn.style.display = 'inline-block';
             }
             updateProgress();
         }
 
         function showFinalButtons() {
             copyBtn.style.display = 'inline-block';
-            emailBtn.style.display = 'inline-block';
             sendInstruction.style.display = 'block';
             finishBtn.style.display = 'none';
         }
 
         function resetQuiz() {
             if (testCompleted) {
-                testCompleted = false;
-                attemptsLeft = MAX_ATTEMPTS;
-                timeLeft = TIME_LIMIT_SEC;
-                timerStarted = false;
-                clearInterval(timerInterval);
-                updateTimerDisplay();
-                checkBtn.disabled = false;
-                copyBtn.style.display = 'none';
-                emailBtn.style.display = 'none';
-                finishBtn.style.display = 'none';
-                sendInstruction.style.display = 'none';
-                resultDiv.textContent = '';
-                attemptInfo.textContent = 'Осталось попыток: ' + attemptsLeft;
+                testCompleted = false; attemptsLeft = MAX_ATTEMPTS; timeLeft = TIME_LIMIT_SEC; timerStarted = false;
+                clearInterval(timerInterval); updateTimerDisplay(); checkBtn.disabled = false;
+                copyBtn.style.display = 'none'; finishBtn.style.display = 'none'; sendInstruction.style.display = 'none';
+                resultDiv.textContent = ''; attemptInfo.textContent = 'Осталось попыток: ' + attemptsLeft;
                 const blocks = document.querySelectorAll('.question-block');
                 blocks.forEach(b => b.classList.remove('correct-highlight', 'wrong-highlight'));
             }
-            const radios = document.querySelectorAll('input[type="radio"]');
-            radios.forEach(r => r.checked = false);
+            const radios = document.querySelectorAll('input[type="radio"]'); radios.forEach(r => r.checked = false);
             updateProgress();
         }
 
-        // Обработчики
         checkBtn.addEventListener('click', checkAnswers);
         resetBtn.addEventListener('click', resetQuiz);
         finishBtn.addEventListener('click', () => {
             if (testCompleted) return;
-            clearInterval(timerInterval);
-            timeUsedFormatted = getTimeUsed();
+            clearInterval(timerInterval); timeUsedFormatted = getTimeUsed();
             let score = 0;
             for (let i = 0; i < quizData.length; i++) {
                 const sel = document.querySelector(`input[name="q${i}"]:checked`);
                 if (sel && parseInt(sel.value) === quizData[i].correct) score++;
             }
-            finalScore = score;
-            testCompleted = true;
-            attemptsLeft = 0;
-            checkBtn.disabled = true;
-            finishBtn.style.display = 'none';
+            finalScore = score; testCompleted = true; attemptsLeft = 0; checkBtn.disabled = true; finishBtn.style.display = 'none';
             attemptInfo.textContent = 'Осталось попыток: 0';
             const name = userNameInput.value.trim();
             resultDiv.innerHTML = name + ': ' + score + ' из ' + quizData.length + ' ⏰ ' + timeUsedFormatted + ' (тест завершён досрочно)';
-            if (score >= 32) {
-                resultDiv.innerHTML += ' 🎉 Отлично! Тест пройден.';
-                launchConfetti();
-            } else {
-                resultDiv.innerHTML += ' 📚 Стоит повторить материал.';
-            }
+            if (score >= 32) { resultDiv.innerHTML += ' 🎉 Отлично! Тест пройден.'; launchConfetti(); }
+            else { resultDiv.innerHTML += ' 📚 Стоит повторить материал.'; }
             showFinalButtons();
             updateProgress();
             saveResult(name, score, timeUsedFormatted);
@@ -576,60 +503,30 @@
             navigator.clipboard.writeText(text).then(() => {
                 copyHint.style.display = 'block';
                 setTimeout(() => copyHint.style.display = 'none', 2000);
+                alert('Результат скопирован. Отправьте его РОПу в личные сообщения 1С.');
             });
-        });
-        emailBtn.addEventListener('click', () => {
-            const name = userNameInput.value.trim();
-            const subject = 'Результат теста: ' + name + ' — ' + finalScore + '/40';
-            const body = name + ' завершил(а) тест по книге Д. Ткаченко.\n\nРезультат: ' + finalScore + ' из 40 правильных ответов.\n' + timeUsedFormatted + '\n\nДата: ' + new Date().toLocaleString();
-            window.open('mailto:?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), '_blank');
-            navigator.clipboard.writeText(body);
-            alert('Текст письма скопирован. Если почтовый клиент не открылся, вставьте сообщение вручную (Ctrl+V).');
         });
         startBtn.addEventListener('click', () => {
             const name = userNameInput.value.trim();
             if (!name) { alert('Пожалуйста, введите ваше имя перед началом теста.'); return; }
-            startArea.style.display = 'none';
-            progressArea.style.display = 'block';
-            attemptInfo.style.display = 'block';
-            quizContainer.style.display = 'block';
-            buttonsArea.style.display = 'flex';
-            startTimer();
+            startArea.style.display = 'none'; progressArea.style.display = 'block'; attemptInfo.style.display = 'block';
+            quizContainer.style.display = 'block'; buttonsArea.style.display = 'flex'; startTimer();
         });
 
         function launchConfetti() {
-            const canvas = document.getElementById('confetti');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            const particles = [];
-            for (let i = 0; i < 80; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height - canvas.height,
-                    size: Math.random() * 6 + 2,
-                    speedY: Math.random() * 3 + 2,
-                    speedX: Math.random() * 2 - 1,
-                    color: `hsl(${Math.random()*60 + 200}, 80%, 60%)`
-                });
-            }
+            const canvas = document.getElementById('confetti'); const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight; const particles = [];
+            for (let i = 0; i < 80; i++) { particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height - canvas.height, size: Math.random() * 6 + 2, speedY: Math.random() * 3 + 2, speedX: Math.random() * 2 - 1, color: `hsl(${Math.random()*60 + 200}, 80%, 60%)` }); }
             function draw() {
                 ctx.clearRect(0,0,canvas.width,canvas.height);
-                particles.forEach(p => {
-                    p.y += p.speedY;
-                    p.x += p.speedX;
-                    ctx.fillStyle = p.color;
-                    ctx.fillRect(p.x, p.y, p.size, p.size);
-                });
-                if (particles.some(p => p.y < canvas.height + 50)) requestAnimationFrame(draw);
-                else ctx.clearRect(0,0,canvas.width,canvas.height);
+                particles.forEach(p => { p.y += p.speedY; p.x += p.speedX; ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.size, p.size); });
+                if (particles.some(p => p.y < canvas.height + 50)) requestAnimationFrame(draw); else ctx.clearRect(0,0,canvas.width,canvas.height);
             }
             draw();
             setTimeout(() => ctx.clearRect(0,0,canvas.width,canvas.height), 4000);
         }
 
-        renderQuiz();
-        updateTimerDisplay();
+        renderQuiz(); updateTimerDisplay();
     })();
 </script>
 </body>
