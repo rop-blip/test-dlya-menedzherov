@@ -9,7 +9,6 @@
     .workspace { max-width: 850px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
     .card { background: #fff; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     
-    /* Шапка: строка с заголовком и кнопкой + описание */
     .card-header { background: #f5f5f5; padding: 16px 20px; border-bottom: 1px solid #ddd; display: flex; flex-direction: column; gap: 6px; }
     .header-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; width: 100%; }
     .header-title { flex: 1 1 auto; min-width: 0; }
@@ -27,29 +26,26 @@
     .block-title { font-weight: 600; }
     .block-goal { font-size: 12px; color: #888; }
     .block-body { padding: 12px 14px; border-top: 1px solid #ddd; background: #fff; }
-    /* Увеличенный наклонный шрифт для текста скрипта */
     .script-text { background: #f9f9f9; border-left: 3px solid #2b579a; padding: 10px 14px; border-radius: 4px; font-style: italic; margin-bottom: 8px; white-space: pre-line; font-size: 15px; }
     .collapsed .block-body { display: none; }
     .collapsed .arrow { transform: rotate(0deg); }
     .arrow { transition: transform 0.2s; display: inline-block; width: 20px; text-align: center; }
 
-    /* Панель возражений */
     .objections-panel { position: fixed; top: 0; right: 0; width: 420px; height: 100vh; background: #fff; box-shadow: -2px 0 12px rgba(0,0,0,0.1); transform: translateX(100%); transition: transform 0.3s; z-index: 1000; display: flex; flex-direction: column; }
     .objections-panel.open { transform: translateX(0); }
     .panel-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #ddd; }
-    .panel-body { flex: 1; overflow-y: auto; padding: 16px; font-size: 14px; } /* внутри панели увеличен на 1px */
+    .panel-body { flex: 1; overflow-y: auto; padding: 16px; font-size: 14px; }
     .obj-item { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 16px; }
     .obj-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
     .obj-question { font-weight: 600; margin-bottom: 6px; color: #c62828; }
     .obj-answer { background: #f9f9f9; padding: 8px 12px; border-left: 3px solid #4caf50; border-radius: 4px; white-space: pre-line; }
 
     .btn { padding: 6px 14px; border-radius: 4px; font-size: 13px; cursor: pointer; border: 1px solid #ccc; background: #fff; color: #333; display: inline-flex; align-items: center; gap: 6px; }
-    .btn-primary { background: #2b579a; color: white; border-color: #2b579a; font-size: 13px; } /* уменьшен до стандартного */
+    .btn-primary { background: #2b579a; color: white; border-color: #2b579a; font-size: 13px; }
     .btn-danger { background: none; border: 1px solid #dc3545; color: #dc3545; }
     .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 999; display: none; }
     .overlay.show { display: block; }
 
-    /* Заметная стрелка-треугольник (CSS) — компактный размер */
     .hint-container {
       display: flex;
       align-items: center;
@@ -74,16 +70,12 @@
       0%, 100% { transform: translateX(0); }
       50% { transform: translateX(-6px); }
     }
-
-    /* Также увеличим описания этапов (наклонный текст) */
-    .desc { font-size: 13px; } /* было 12px, +1, т.к. они не главные, но для читаемости */
   </style>
 </head>
 <body>
 <div class="workspace">
   <div class="card">
     <div class="card-header">
-      <!-- Строка с заголовком и кнопкой -->
       <div class="header-row">
         <div class="header-title">
           <h2>📞 Скрипт «ФАРМА»</h2>
@@ -93,7 +85,6 @@
           <button class="btn btn-primary" id="openPanelBtn">📋 Возражения и готовые ответы</button>
         </div>
       </div>
-      <!-- Описания под заголовком -->
       <div class="header-subtitle">Изготовление деталей для фармацевтического оборудования: таблетпрессы, линии розлива, упаковочные автоматы, лабораторные приборы</div>
       <div class="header-company">Активен: ГРАЙНЕР ПЭКЭДЖИН ООО</div>
     </div>
@@ -115,10 +106,8 @@
   </div>
 </div>
 
-<!-- Оверлей -->
 <div class="overlay" id="overlay"></div>
 
-<!-- Выдвижная панель возражений -->
 <div class="objections-panel" id="objPanel">
   <div class="panel-header">
     <h3 style="font-size:16px;">🛡️ Возражения и готовые ответы</h3>
@@ -128,7 +117,6 @@
 </div>
 
 <script>
-  // Данные скрипта с иконками
   const approaches = {
     direct: {
       label: '🗣️ Прямое общение с ЛПР',
@@ -138,26 +126,11 @@
     soft: {
       label: '🔑 Обход секретаря',
       variants: [
-        {
-          title: '🔑 Узкопрофильные вопросы',
-          text: '«Здравствуйте! Я хочу задать два узкопрофильных вопроса вашему главному инженеру — чтобы точно знать, сможем ли мы быть вам полезны. Соедините, пожалуйста.»'
-        },
-        {
-          title: '🔑 Приём с именем',
-          text: '«Добрый день! От вас был звонок, коллеги записали, что звонил снабженец по вопросу изготовления деталей по чертежам. Соедините с ним!»'
-        },
-        {
-          title: '🔑 Ошибка в имени',
-          text: '«А как правильно имя и отчество?.. А, точно! Не туда посмотрел. Соедините с ним!» (если секретарь говорит, что такого нет)'
-        },
-        {
-          title: '🔑 Жёсткий фильтр',
-          text: '«Наверняка вам запрещено соединять с теми, кто звонит по пустякам. Я не предлагаю купить у меня канцтовары или салфетки — я звоню по вопросу изготовления высокоточных деталей из любого металла и инженерных пластмасс. Соедините с главным инженером!»'
-        },
-        {
-          title: '🔑 Наследство от коллеги',
-          text: '«Мне в наследство досталась база моего коллеги Ивана. Он работал с вашей компанией. Судя по последним записям, у вас был интерес к нашему оборудованию. Звоню, чтобы переговорить с отделом снабжения. Соедините!»'
-        }
+        { title: '🔑 Узкопрофильные вопросы', text: '«Здравствуйте! Я хочу задать два узкопрофильных вопроса вашему главному инженеру — чтобы точно знать, сможем ли мы быть вам полезны. Соедините, пожалуйста.»' },
+        { title: '🔑 Приём с именем', text: '«Добрый день! От вас был звонок, коллеги записали, что звонил снабженец по вопросу изготовления деталей по чертежам. Соедините с ним!»' },
+        { title: '🔑 Ошибка в имени', text: '«А как правильно имя и отчество?.. А, точно! Не туда посмотрел. Соедините с ним!» (если секретарь говорит, что такого нет)' },
+        { title: '🔑 Жёсткий фильтр', text: '«Наверняка вам запрещено соединять с теми, кто звонит по пустякам. Я не предлагаю купить у меня канцтовары или салфетки — я звоню по вопросу изготовления высокоточных деталей из любого металла и инженерных пластмасс. Соедините с главным инженером!»' },
+        { title: '🔑 Наследство от коллеги', text: '«Мне в наследство досталась база моего коллеги Ивана. Он работал с вашей компанией. Судя по последним записям, у вас был интерес к нашему оборудованию. Звоню, чтобы переговорить с отделом снабжения. Соедините!»' }
       ],
       note: 'После успешного обхода секретаря используйте вкладку «Прямое общение с ЛПР» для представления.'
     }
@@ -166,7 +139,7 @@
   const blocks = [
     {
       id: 'B', icon: '💊', title: 'Б. Привязка к отрасли', goal: 'Показать знание специфики',
-      text: '«Знаю, что фармацевтические производства — это зона высочайшей ответственности. Здесь критически важны не только точность и чистота обработки, но и правильный подбор материалов, способных выдерживать многократную стерилизацию и контакт с агрессивными средами. Ошибка в материале или допуске может стоить целой партии продукта. Поэтому мы уделяем особое внимание сертификации и стабильности поставок.»'
+      text: '«Знаю, что фармацевтические производства — это зона высочайшей ответственности. Здесь критически важны не только точность и чистота обработки, но и правильный подбор материалов, способных выдерживать многократную стерилизацию и контакт с агрессивными средами. Ошибка в материале или допуске может стоить целой партии продукта. Поэтому мы делаем ставку на бескомпромиссное качество изготовления и готовность работать даже с самыми сложными материалами — от фторопласта до титана.»'
     },
     {
       id: 'C', icon: '🏭', title: 'В. Релевантный пример', goal: 'Привести живой кейс',
@@ -182,130 +155,60 @@
     }
   ];
 
-  // Готовые ответы на возражения
   const objections = [
-    { q: '«У нас уже есть поставщик, всё устраивает»',
-      a: '«Это отлично. А при условии, что всё устраивает, что бы вы хотели улучшить? Может, сроки или редкие материалы?»\n\n«Получив второго партнёра по сложным деталям, вы сможете сравнивать условия и выбирать лучшее.»' },
-    { q: '«У вас дороже»',
-      a: '«Я подготовил предложение, где цены в среднем на 30% выше контрафактных аналогов. Но мы работаем под ключ: любые сложные материалы, покрытия, закалка, полный сервис. Большинство клиентов после детального разбора выбирают нас.»' },
-    { q: '«Мне важна только цена»',
-      a: '«Иногда клиентов интересует только цена. Чтобы я подготовил оптимальное предложение — подскажите, на что ещё обратить внимание: долговечность, точность, сроки?»\n\n«Если действительно только цена, я могу дать контакты кустарного производства. Но уверен, вам важны и сроки, и ремонтопригодность. Это так?»' },
-    { q: '«Скиньте информацию на почту»',
-      a: '«Обязательно пришлю. Но в тексте лишь общая канва, она требует пояснений. Давайте я сейчас коротко пройдусь по ключевым моментам — это займёт пару минут.»' },
-    { q: '«Пришлите предложение, мы изучим»',
-      a: '«Вы наверняка получаете десятки предложений. Я предлагаю инвестировать пять минут в разговор сейчас вместо получаса чтения бумаг. После разговора я предоставлю адресное КП на одном листе.»' },
-    { q: '«Склад полон, ничего не надо»',
-      a: '«Это замечательно! Значит, можем спокойно обсудить перспективное сотрудничество. И если будет интерес — приезжайте к нам, своими глазами увидите производство.»' },
-    { q: '«Вы свалились как снег на голову»',
-      a: '«Скажите, вы недавно произвели закупку? Или дело в том, что у вас пока нет полной информации о нашей компании, чтобы понять, чем мы отличаемся от других?»' },
-    { q: '«У нас своё производство, сами справляемся»',
-      a: '«Это замечательно, что вы самодостаточны. Давайте обсудим, чем мы можем быть полезны в пиковые нагрузки или по редким операциям. И приезжайте к нам, посмотрите оборудование.»' },
-    { q: '«Не меняем поставщиков в середине года»',
-      a: '«Что же мне всё-таки нужно сделать, чтобы мы могли начать сотрудничество раньше? Как можно обойти это правило?»' },
-    { q: '«Нам надо подумать, перезвоните через месяц»',
-      a: '«Знаю, что за фразой "надо подумать" часто стоит другая причина. Скажите честно, что вас останавливает?»' },
-    { q: '«Я должен подумать, это не быстрое решение»',
-      a: '«Если бы наше сотрудничество уже приносило вам прибыль, вам было бы нужно думать? Давайте я сейчас отвечу на вопросы, которые вас смущают.»' },
-    { q: '«Почему я должен работать с вами?»',
-      a: '«Я вовсе не говорю, что вы должны всё бросить и переключиться на нас. Я предлагаю возможность сравнить и выбрать. Получив ещё одного партнёра по сложным деталям, вы только выиграете.»' },
-    { q: '«Скиньте предложение, я покажу директору»',
-      a: '«Я обязательно отправлю. Но чтобы директор принял взвешенное решение, давайте я сначала уточню у вас пару моментов: что для него сейчас важнее — снижение цены или сокращение сроков?»' }
+    { q: '«У нас уже есть поставщик, всё устраивает»', a: '«Это отлично. А при условии, что всё устраивает, что бы вы хотели улучшить? Может, сроки или редкие материалы?»\n\n«Получив второго партнёра по сложным деталям, вы сможете сравнивать условия и выбирать лучшее.»' },
+    { q: '«У вас дороже»', a: '«Я подготовил предложение, где цены в среднем на 30% выше контрафактных аналогов. Но мы работаем под ключ: любые сложные материалы, покрытия, закалка, полный сервис. Большинство клиентов после детального разбора выбирают нас.»' },
+    { q: '«Мне важна только цена»', a: '«Иногда клиентов интересует только цена. Чтобы я подготовил оптимальное предложение — подскажите, на что ещё обратить внимание: долговечность, точность, сроки?»\n\n«Если действительно только цена, я могу дать контакты кустарного производства. Но уверен, вам важны и сроки, и ремонтопригодность. Это так?»' },
+    { q: '«Скиньте информацию на почту»', a: '«Обязательно пришлю. Но в тексте лишь общая канва, она требует пояснений. Давайте я сейчас коротко пройдусь по ключевым моментам — это займёт пару минут.»' },
+    { q: '«Пришлите предложение, мы изучим»', a: '«Вы наверняка получаете десятки предложений. Я предлагаю инвестировать пять минут в разговор сейчас вместо получаса чтения бумаг. После разговора я предоставлю адресное КП на одном листе.»' },
+    { q: '«Склад полон, ничего не надо»', a: '«Это замечательно! Значит, можем спокойно обсудить перспективное сотрудничество. И если будет интерес — приезжайте к нам, своими глазами увидите производство.»' },
+    { q: '«Вы свалились как снег на голову»', a: '«Скажите, вы недавно произвели закупку? Или дело в том, что у вас пока нет полной информации о нашей компании, чтобы понять, чем мы отличаемся от других?»' },
+    { q: '«У нас своё производство, сами справляемся»', a: '«Это замечательно, что вы самодостаточны. Давайте обсудим, чем мы можем быть полезны в пиковые нагрузки или по редким операциям. И приезжайте к нам, посмотрите оборудование.»' },
+    { q: '«Не меняем поставщиков в середине года»', a: '«Что же мне всё-таки нужно сделать, чтобы мы могли начать сотрудничество раньше? Как можно обойти это правило?»' },
+    { q: '«Нам надо подумать, перезвоните через месяц»', a: '«Знаю, что за фразой "надо подумать" часто стоит другая причина. Скажите честно, что вас останавливает?»' },
+    { q: '«Я должен подумать, это не быстрое решение»', a: '«Если бы наше сотрудничество уже приносило вам прибыль, вам было бы нужно думать? Давайте я сейчас отвечу на вопросы, которые вас смущают.»' },
+    { q: '«Почему я должен работать с вами?»', a: '«Я вовсе не говорю, что вы должны всё бросить и переключиться на нас. Я предлагаю возможность сравнить и выбрать. Получив ещё одного партнёра по сложным деталям, вы только выиграете.»' },
+    { q: '«Скиньте предложение, я покажу директору»', a: '«Я обязательно отправлю. Но чтобы директор принял взвешенное решение, давайте я сначала уточню у вас пару моментов: что для него сейчас важнее — снижение цены или сокращение сроков?»' }
   ];
 
-  // Рендер вариантов начала
   function renderApproach(approach) {
     const container = document.getElementById('approachContent');
     const d = approaches[approach];
-
     if (approach === 'direct') {
-      container.innerHTML = `
-        <div class="script-block">
-          <div class="block-header" onclick="toggleBlock(this)">
-            <span><span class="arrow">▼</span> <span class="block-title">${d.label}</span></span>
-            <span class="block-goal">Представление</span>
-          </div>
-          <div class="block-body">
-            <div class="script-text">${d.intro}</div>
-            <div style="font-size:12px; color:#666;">${d.note}</div>
-          </div>
-        </div>`;
-    } else if (approach === 'soft') {
+      container.innerHTML = `<div class="script-block"><div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▼</span> <span class="block-title">${d.label}</span></span><span class="block-goal">Представление</span></div><div class="block-body"><div class="script-text">${d.intro}</div><div style="font-size:12px; color:#666;">${d.note}</div></div></div>`;
+    } else {
       let variantsHtml = '';
-      d.variants.forEach((v, index) => {
-        variantsHtml += `
-          <div class="script-block collapsed" id="variant-${index}">
-            <div class="block-header" onclick="toggleBlock(this)">
-              <span><span class="arrow">▶</span> <span class="block-title">${v.title}</span></span>
-              <span class="block-goal">Фраза</span>
-            </div>
-            <div class="block-body">
-              <div class="script-text">${v.text}</div>
-            </div>
-          </div>`;
-      });
-      container.innerHTML = `
-        <div style="margin-bottom:12px; font-size:12px; color:#666;">${d.note}</div>
-        ${variantsHtml}`;
+      d.variants.forEach((v, index) => { variantsHtml += `<div class="script-block collapsed" id="variant-${index}"><div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">${v.title}</span></span><span class="block-goal">Фраза</span></div><div class="block-body"><div class="script-text">${v.text}</div></div></div>`; });
+      container.innerHTML = `<div style="margin-bottom:12px; font-size:12px; color:#666;">${d.note}</div>${variantsHtml}`;
     }
   }
 
-  // Рендер блоков Б-Д с иконками
   function renderBlocks() {
     let html = '';
-    blocks.forEach(b => {
-      html += `
-        <div class="script-block collapsed" id="block-${b.id}">
-          <div class="block-header" onclick="toggleBlock(this)">
-            <span><span class="arrow">▶</span> <span class="block-title">${b.icon} ${b.title}</span></span>
-            <span class="block-goal">${b.goal}</span>
-          </div>
-          <div class="block-body">
-            <div class="script-text">${b.text}</div>
-          </div>
-        </div>`;
-    });
+    blocks.forEach(b => { html += `<div class="script-block collapsed" id="block-${b.id}"><div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">${b.icon} ${b.title}</span></span><span class="block-goal">${b.goal}</span></div><div class="block-body"><div class="script-text">${b.text}</div></div></div>`; });
     document.getElementById('blocksContainer').innerHTML = html;
   }
 
-  // Переключение блока
   window.toggleBlock = function(header) {
     const block = header.parentElement;
     block.classList.toggle('collapsed');
     const arrow = block.querySelector('.arrow');
-    if (arrow) {
-      arrow.textContent = block.classList.contains('collapsed') ? '▶' : '▼';
-    }
+    if (arrow) arrow.textContent = block.classList.contains('collapsed') ? '▶' : '▼';
   };
 
-  // Панель возражений
-  const overlay = document.getElementById('overlay');
-  const panel = document.getElementById('objPanel');
-  const openBtn = document.getElementById('openPanelBtn');
-  const closeBtn = document.getElementById('closePanelBtn');
-
+  const overlay = document.getElementById('overlay'), panel = document.getElementById('objPanel'),
+        openBtn = document.getElementById('openPanelBtn'), closeBtn = document.getElementById('closePanelBtn');
   function openPanel() {
-    panel.classList.add('open');
-    overlay.classList.add('show');
+    panel.classList.add('open'); overlay.classList.add('show');
     let html = '';
-    objections.forEach(o => {
-      html += `<div class="obj-item">
-                 <div class="obj-question">${o.q}</div>
-                 <div class="obj-answer">${o.a}</div>
-               </div>`;
-    });
+    objections.forEach(o => { html += `<div class="obj-item"><div class="obj-question">${o.q}</div><div class="obj-answer">${o.a}</div></div>`; });
     document.getElementById('objContent').innerHTML = html;
   }
-
-  function closePanel() {
-    panel.classList.remove('open');
-    overlay.classList.remove('show');
-  }
-
+  function closePanel() { panel.classList.remove('open'); overlay.classList.remove('show'); }
   openBtn.addEventListener('click', openPanel);
   closeBtn.addEventListener('click', closePanel);
   overlay.addEventListener('click', closePanel);
 
-  // Переключение вкладок начала
   document.getElementById('approachTabs').addEventListener('click', e => {
     if (e.target.classList.contains('switch-tab')) {
       document.querySelectorAll('.switch-tab').forEach(t => t.classList.remove('active'));
@@ -314,7 +217,6 @@
     }
   });
 
-  // Старт
   renderApproach('direct');
   renderBlocks();
 </script>
