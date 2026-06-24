@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Скрипт Паркс-инжиниринг – универсальный</title>
+  <title>Скрипт для отдела продаж "Паркс-инжиниринг"</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; padding: 20px; font-size: 13px; }
@@ -10,9 +10,15 @@
     .card { background: #fff; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .card-header { background: #f5f5f5; padding: 16px 20px; border-bottom: 1px solid #ddd; display: flex; flex-direction: column; gap: 6px; }
     .header-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; width: 100%; }
-    .header-title h2 { font-size: 20px; font-weight: 700; color: #1a3a5c; margin: 0; line-height: 1.2; }
+    .header-title h2 { font-size: 24px; font-weight: 700; color: #1a3a5c; margin: 0; line-height: 1.2; }
     .header-subtitle { font-size: 12px; color: #666; margin-top: 2px; }
     .card-body { padding: 16px 20px; }
+
+    /* Логотип */
+    .logo-area { display: flex; align-items: center; margin-right: 16px; }
+    .logo-img { height: 110px; width: auto; }
+    .logo-fallback { height: 110px; width: 110px; background: #2b579a; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 36px; border-radius: 4px; }
+
     .switch-tabs { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 16px; flex-wrap: wrap; }
     .switch-tab { padding: 8px 16px; cursor: pointer; border: none; background: none; font-size: 13px; color: #666; border-bottom: 2px solid transparent; margin-bottom: -2px; white-space: nowrap; }
     .switch-tab.active { color: #2b579a; border-bottom-color: #2b579a; font-weight: 600; }
@@ -65,8 +71,13 @@
   <div class="card">
     <div class="card-header">
       <div class="header-row">
-        <div class="header-title">
-          <h2>📞 Скрипт Паркс-инжиниринг</h2>
+        <div class="header-title" style="display: flex; align-items: center;">
+          <!-- Логотип -->
+          <div class="logo-area">
+            <img class="logo-img" src="https://parxeng.com/static/assets/images/logo.svg" alt="Логотип Паркс-Инжиниринг" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="logo-fallback" style="display:none;">ПИ</div>
+          </div>
+          <h2>📞 Скрипт для отдела продаж "Паркс-инжиниринг"</h2>
         </div>
         <div class="hint-container">
           <span class="hint-arrow"></span>
@@ -479,7 +490,7 @@ function updateToggleAllButton() {
   }
 }
 
-// Панель возражений – обновлённый рендер
+// Панель возражений
 const overlay = document.getElementById('overlay');
 const panel = document.getElementById('objPanel');
 document.getElementById('openPanelBtn').onclick = () => {
