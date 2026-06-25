@@ -48,6 +48,18 @@
         .script-condition-neutral { color: #555; font-weight: bold; margin: 4px 0; display: flex; align-items: center; gap: 4px; }
         .script-line { margin-bottom: 4px; }
 
+        /* Галерея */
+        .gallery { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+        .gallery-item { width: 120px; height: 90px; border-radius: 4px; overflow: hidden; cursor: pointer; border: 1px solid #ddd; transition: transform 0.2s; }
+        .gallery-item:hover { transform: scale(1.05); border-color: #2b579a; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* Лайтбокс */
+        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
+        .lightbox.show { display: flex; }
+        .lightbox img { max-width: 90%; max-height: 90%; border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .lightbox-close { position: absolute; top: 20px; right: 30px; font-size: 40px; color: #fff; cursor: pointer; background: none; border: none; line-height: 1; }
+
         .objections-panel { position: fixed; top: 0; right: 0; width: 480px; height: 100vh; background: #fff; box-shadow: -2px 0 12px rgba(0,0,0,0.1); transform: translateX(100%); transition: transform 0.3s; z-index: 1000; display: flex; flex-direction: column; }
         .objections-panel.open { transform: translateX(0); }
         .panel-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #ddd; }
@@ -123,6 +135,12 @@
     </div>
 </div>
 
+<!-- Лайтбокс -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightboxImg" src="" alt="Увеличенное фото">
+</div>
+
 <div class="overlay" id="overlay"></div>
 <div class="objections-panel" id="objPanel">
     <div class="panel-header">
@@ -133,7 +151,10 @@
 </div>
 
 <script>
-// ==================== ДАННЫЕ ПО ОТРАСЛЯМ (обновлённые приветствия) ====================
+// ==================== ДАННЫЕ ПО ОТРАСЛЯМ ====================
+const placeholderMini = (label) => `https://via.placeholder.com/120x90/2b579a/ffffff?text=${encodeURIComponent(label)}`;
+const placeholderBig = (label) => `https://via.placeholder.com/800x600/2b579a/ffffff?text=${encodeURIComponent(label)}`;
+
 const industryData = {
     pharma: {
         name: "💊 Фармацевтика",
@@ -148,6 +169,11 @@ const industryData = {
               text:'«Работаем с фторопластом, PEEK, полиацеталем, нержавеющими сталями, титаном. Делаем единичные образцы и серии, предоставляем полный пакет документации. Особое внимание — чистоте и отсутствию заусенцев, это принципиально для фармы.»' },
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, есть ли сейчас потребность в изготовлении или ремонте деталей для оборудования? Я готов оперативно просчитать стоимость и сроки по вашим чертежам или эскизам.»' }
+        ],
+        gallery: [
+            { thumb: placeholderMini('Фарма 1'), full: placeholderBig('Фарма 1') },
+            { thumb: placeholderMini('Фарма 2'), full: placeholderBig('Фарма 2') },
+            { thumb: placeholderMini('Фарма 3'), full: placeholderBig('Фарма 3') }
         ]
     },
     packaging: {
@@ -163,6 +189,10 @@ const industryData = {
               text:'«Мы работаем с инструментальными сталями, полиацеталем, нейлоном, фторопластом. Делаем как единичные детали, так и серийные партии. При необходимости подбираем материал с повышенной износостойкостью или антиадгезионными свойствами.»' },
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, есть ли сейчас потребность в замене или ремонте деталей для вашего оборудования? Я готов оперативно просчитать стоимость и сроки по вашим чертежам или эскизам.»' }
+        ],
+        gallery: [
+            { thumb: placeholderMini('Упаковка 1'), full: placeholderBig('Упаковка 1') },
+            { thumb: placeholderMini('Упаковка 2'), full: placeholderBig('Упаковка 2') }
         ]
     },
     paper: {
@@ -178,6 +208,9 @@ const industryData = {
               text:'«Работаем с закалёнными сталями, наносим защитные покрытия, изготавливаем детали сложной геометрии. При необходимости можем предложить обратный инжиниринг изношенных узлов.»' },
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, какие детали вашего оборудования требуют наиболее частой замены? Я готов оперативно просчитать стоимость и сроки изготовления по вашим чертежам.»' }
+        ],
+        gallery: [
+            { thumb: placeholderMini('Бумага 1'), full: placeholderBig('Бумага 1') }
         ]
     },
     hygiene: {
@@ -193,6 +226,9 @@ const industryData = {
               text:'«Работаем с нержавеющими сталями, фторопластами, полиацеталем, обеспечиваем чистоту обработки и соблюдение гигиенических требований. Делаем как единичные детали, так и серии.»' },
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, есть ли сейчас потребность в изготовлении или ремонте деталей для ваших конвертинг-линий? Я готов оперативно просчитать стоимость и сроки по вашим чертежам или эскизам.»' }
+        ],
+        gallery: [
+            { thumb: placeholderMini('Гигиена 1'), full: placeholderBig('Гигиена 1') }
         ]
     },
     instruments: {
@@ -208,6 +244,9 @@ const industryData = {
               text:'«Работаем с титаном, инваром, алюминиевыми сплавами, нержавейкой. Выполняем финишную обработку, обеспечиваем стабильность размеров. Можем взять на себя полный цикл — от консультации по материалу до готового изделия.»' },
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, есть ли сейчас потребность в изготовлении прецизионных деталей для ваших приборов? Я готов оперативно просчитать стоимость и сроки по вашим чертежам.»' }
+        ],
+        gallery: [
+            { thumb: placeholderMini('Приборы 1'), full: placeholderBig('Приборы 1') }
         ]
     },
     food: {
@@ -223,6 +262,9 @@ const industryData = {
               text:'«Работаем с AISI 304, 316, титаном, полимерами, разрешёнными для контакта с пищей. Обеспечиваем требуемую шероховатость (Ra ≤ 0,8 мкм), ультразвуковую очистку и паспортизацию материала.»' },
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, есть ли сейчас потребность в изготовлении или ремонте деталей для вашего пищевого оборудования? Я готов оперативно просчитать стоимость и сроки по вашим чертежам.»' }
+        ],
+        gallery: [
+            { thumb: placeholderMini('Пищевое 1'), full: placeholderBig('Пищевое 1') }
         ]
     },
     research: {
@@ -238,6 +280,9 @@ const industryData = {
               text:'«Работаем с титаном, никелевыми сплавами, нержавеющими сталями, фторопластом. Имеем опыт в нестандартных задачах, помогаем с консультациями по конструированию и подбору материалов.»' },
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, есть ли сейчас потребность в изготовлении деталей для вашего научного оборудования? Я готов оперативно просчитать стоимость и сроки по вашим чертежам или техническому заданию.»' }
+        ],
+        gallery: [
+            { thumb: placeholderMini('Наука 1'), full: placeholderBig('Наука 1') }
         ]
     },
     medical: {
@@ -253,6 +298,9 @@ const industryData = {
               text:'«Работаем с титаном, нержавеющими сталями медицинского назначения, PEEK. Обеспечиваем финишную обработку (электрополировку, пассивацию), предоставляем сертификаты на материал и протоколы измерений.»' },
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, есть ли сейчас потребность в изготовлении деталей для вашего медицинского оборудования? Я готов оперативно просчитать стоимость и сроки по вашим чертежам или эскизам.»' }
+        ],
+        gallery: [
+            { thumb: placeholderMini('Медицина 1'), full: placeholderBig('Медицина 1') }
         ]
     }
 };
@@ -353,7 +401,7 @@ const objections = [
         { q: "Не интересно", answers: [
             "[Имя], я работаю со многими фирмами и когда слышу «не интересно» – это либо нет средств, либо просто нет интереса. Я уверен на 100%, вы заинтересуетесь нашим предложением. Уделите мне буквально пару минут.",
             "Подскажите, пожалуйста, почему такая позиция? Как я понял, вы часто сталкиваетесь с [проблемы клиента] и из-за этого несете убытки. Я уверен, вас это не устраивает, верно? Мы же гарантируем, что подобных ситуаций не будет при сотрудничестве с нами.",
-            "Хорошо, если вам не интересно наше предложение, я задам вам 3 вопроса, если вы на них ответите положительно, значит сотрудничество с нами всё-таки принесёт вам результат.\n• Вы хотите сэкономить на изготовлении деталей до 20% стоимости?\n• Вы хотите увеличить сроки эксплуатации оборудования за счет использования деталей высокого качества?\n• Вы заинтересованы в сотрудничестве с организацией, которая предложит лучшие условия по доставке, изготовлению деталей?\nМы дорожим каждым клиентом. Уверен, вы сами это оцените. Давайте закажем пробную партию?"
+            "Хорошо, если вам не интересно наше предложение, я задам вам 3 вопроса, если вы на них ответите положительно, значит сотрудничество с нами всё-таки принесёт вам результат.\n• Вы хотиte сэкономить на изготовлении деталей до 20% стоимости?\n• Вы хотите увеличить сроки эксплуатации оборудования за счет использования деталей высокого качества?\n• Вы заинтересованы в сотрудничестве с организацией, которая предложит лучшие условия по доставке, изготовлению деталей?\nМы дорожим каждым клиентом. Уверен, вы сами это оцените. Давайте закажем пробную партию?"
         ]}
     ]},
     { group: "📌 Подумаю / совет", items: [
@@ -464,15 +512,31 @@ function renderLines(lines) {
     }).join('');
 }
 
+function renderGallery(images) {
+    if (!images || images.length === 0) return '';
+    let html = '';
+    images.forEach((img, idx) => {
+        html += `<div class="gallery-item" onclick="openLightbox('${img.full}')"><img src="${img.thumb}" alt="Пример работы"></div>`;
+    });
+    return `<div class="gallery">${html}</div>`;
+}
+
 function renderIlyaBlocks(industryKey) {
     const data = industryData[industryKey];
     const container = document.getElementById('approachContent');
     let html = '';
+    // Основные блоки
     data.blocks.forEach((b, i) => {
         html += `<div class="script-block collapsed" id="ilya-${i}">
             <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">${b.icon} ${b.title}</span></span><span class="block-goal">${b.goal}</span></div>
             <div class="block-body"><div class="script-text">${b.text}</div></div></div>`;
     });
+    // Галерея (раскрывающаяся панель)
+    if (data.gallery && data.gallery.length > 0) {
+        html += `<div class="script-block collapsed" id="ilya-gallery">
+            <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">📸 Примеры работ</span></span><span class="block-goal">Нажмите для увеличения</span></div>
+            <div class="block-body">${renderGallery(data.gallery)}</div></div>`;
+    }
     container.innerHTML = html;
     updateToggleAllButton();
 }
@@ -576,6 +640,18 @@ function updateToggleAllButton() {
         }
     }
 }
+
+// Лайтбокс
+function openLightbox(src) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('show');
+}
+document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
+});
 
 // Панель возражений
 const overlay = document.getElementById('overlay');
