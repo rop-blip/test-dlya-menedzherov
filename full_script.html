@@ -65,7 +65,7 @@
         .objections-panel.open { transform: translateX(0); }
         .objections-panel.fullscreen { width: 100vw; height: 100vh; }
         .panel-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #ddd; background: #fff; }
-        .panel-body { flex: 1; overflow-y: auto; padding: 16px; font-size: 14px; }
+        .panel-body { flex: 1; overflow-y: auto; padding: 16px; font-size: 14px; position: relative; }
         .obj-group { margin-bottom: 16px; border: 1px solid #eee; border-radius: 4px; overflow: hidden; }
         .obj-group-title { font-weight: 700; font-size: 14px; color: #1a3a5c; padding: 10px 12px; background: #f9f9f9; cursor: pointer; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid transparent; }
         .obj-group-title:hover { background: #f0f0f0; }
@@ -85,6 +85,11 @@
         .obj-quick-links { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
         .obj-quick-link { padding: 4px 10px; background: #e8f0fe; color: #2b579a; border-radius: 12px; cursor: pointer; font-size: 12px; white-space: nowrap; border: 1px solid transparent; }
         .obj-quick-link:hover { background: #d0e3fc; border-color: #2b579a; }
+
+        /* Кнопка "Наверх" */
+        .scroll-to-top { position: fixed; bottom: 20px; right: 20px; width: 40px; height: 40px; background: #2b579a; color: white; border: none; border-radius: 50%; font-size: 20px; cursor: pointer; display: none; align-items: center; justify-content: center; z-index: 1500; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .scroll-to-top.show { display: flex; }
+        .scroll-to-top:hover { background: #1a3a5c; }
 
         .btn { padding: 6px 14px; border-radius: 4px; font-size: 13px; cursor: pointer; border: 1px solid #ccc; background: #fff; color: #333; display: inline-flex; align-items: center; gap: 6px; }
         .btn-primary { background: #2b579a; color: white; border-color: #2b579a; font-size: 13px; }
@@ -168,6 +173,9 @@
     </div>
     <div class="panel-body" id="objContent"></div>
 </div>
+
+<!-- Кнопка "Наверх" -->
+<button class="scroll-to-top" id="scrollToTopBtn" title="Вернуться к началу">⬆</button>
 
 <script>
 // ==================== ДАННЫЕ ПО ОТРАСЛЯМ (обновлённая галерея Фармы) ====================
@@ -750,6 +758,14 @@ function renderObjections() {
     document.querySelectorAll('.obj-group-title').forEach(title => {
         title.addEventListener('click', function(e) {
             const group = this.parentElement;
+            const allGroups = document.querySelectorAll('.obj-group');
+            // Закрываем все остальные группы
+            allGroups.forEach(g => {
+                if (g !== group) {
+                    g.classList.remove('expanded');
+                }
+            });
+            // Переключаем текущую
             group.classList.toggle('expanded');
         });
     });
@@ -758,12 +774,35 @@ function renderObjections() {
             const index = this.dataset.groupIndex;
             const group = document.querySelector(`.obj-group[data-group-index="${index}"]`);
             if (group) {
+                // Закрываем все остальные группы
+                const allGroups = document.querySelectorAll('.obj-group');
+                allGroups.forEach(g => g.classList.remove('expanded'));
+                // Открываем нужную
                 group.classList.add('expanded');
                 group.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
     });
 }
+
+// Кнопка "Наверх"
+const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+const panelBody = document.getElementById('objContent');
+
+// Отслеживаем скролл внутри панели возражений
+document.getElementById('objPanel').addEventListener('scroll', function(e) {
+    if (e.target === this.querySelector('.panel-body')) {
+        if (e.target.scrollTop > 300) {
+            scrollToTopBtn.classList.add('show');
+        } else {
+            scrollToTopBtn.classList.remove('show');
+        }
+    }
+});
+
+scrollToTopBtn.addEventListener('click', function() {
+    document.querySelector('#objPanel .panel-body').scrollTo({ top: 0, behavior: 'smooth' });
+});
 
 // Переключение подходов
 document.getElementById('approachTabs').addEventListener('click', e => {
