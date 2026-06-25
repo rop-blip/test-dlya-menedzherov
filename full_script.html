@@ -59,8 +59,9 @@
         /* Лайтбокс */
         .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
         .lightbox.show { display: flex; }
-        .lightbox img { max-width: 90%; max-height: 90%; border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .lightbox img, .lightbox video { max-width: 90%; max-height: 90%; border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         .lightbox-close { position: absolute; top: 20px; right: 30px; font-size: 40px; color: #fff; cursor: pointer; background: none; border: none; line-height: 1; }
+        .lightbox-video { display: none; }
 
         .objections-panel { position: fixed; top: 0; right: 0; width: 480px; height: 100vh; background: #fff; box-shadow: -2px 0 12px rgba(0,0,0,0.1); transform: translateX(100%); transition: transform 0.3s; z-index: 1000; display: flex; flex-direction: column; }
         .objections-panel.open { transform: translateX(0); }
@@ -140,7 +141,8 @@
 <!-- Лайтбокс -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
     <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-    <img id="lightboxImg" src="" alt="Увеличенное фото">
+    <img id="lightboxImg" src="" alt="Увеличенное фото" style="display:none;">
+    <video id="lightboxVideo" class="lightbox-video" controls style="display:none;"></video>
 </div>
 
 <div class="overlay" id="overlay"></div>
@@ -159,14 +161,14 @@ const placeholderBig = (label) => `https://via.placeholder.com/800x600/2b579a/ff
 
 // Фарма – реальные фото + видео
 const pharmaGallery = [
-    { type: 'image', thumb: 'https://drive.google.com/uc?export=view&id=1bcUxkePmPWulRjRNt1nEiVm0C2k48l1b', full: 'https://drive.google.com/uc?export=view&id=1bcUxkePmPWulRjRNt1nEiVm0C2k48l1b' },
-    { type: 'image', thumb: 'https://drive.google.com/uc?export=view&id=1uSGZfu-mAhdPaA2ZSD_JcyEBUUWyJEMK', full: 'https://drive.google.com/uc?export=view&id=1uSGZfu-mAhdPaA2ZSD_JcyEBUUWyJEMK' },
-    { type: 'image', thumb: 'https://drive.google.com/uc?export=view&id=12M-OQSYeoxlJK4DKZbKf5dFQ71YwHrLW', full: 'https://drive.google.com/uc?export=view&id=12M-OQSYeoxlJK4DKZbKf5dFQ71YwHrLW' },
-    { type: 'image', thumb: 'https://drive.google.com/uc?export=view&id=1TlZPd80p-WkOUp_rLQmPBjRrrpDUT01m', full: 'https://drive.google.com/uc?export=view&id=1TlZPd80p-WkOUp_rLQmPBjRrrpDUT01m' },
-    { type: 'image', thumb: 'https://drive.google.com/uc?export=view&id=1RtBFgZC5-g2KTsIi8sMeuKVW15qd5zLk', full: 'https://drive.google.com/uc?export=view&id=1RtBFgZC5-g2KTsIi8sMeuKVW15qd5zLk' },
-    { type: 'image', thumb: 'https://drive.google.com/uc?export=view&id=1E_my9_b0gowUoUxbrudxz7Z0OeYFNDbn', full: 'https://drive.google.com/uc?export=view&id=1E_my9_b0gowUoUxbrudxz7Z0OeYFNDbn' },
-    { type: 'image', thumb: 'https://drive.google.com/uc?export=view&id=10otx0CEC9_fBF_DttNvPigj_u_0nMxSW', full: 'https://drive.google.com/uc?export=view&id=10otx0CEC9_fBF_DttNvPigj_u_0nMxSW' },
-    { type: 'video', thumb: 'https://drive.google.com/uc?export=view&id=1XZa_kkV5KX4blGKnRRVf1AhAlyf51CEN', link: 'https://drive.google.com/file/d/1XZa_kkV5KX4blGKnRRVf1AhAlyf51CEN/view' }
+    { type: 'image', thumb: 'https://drive.google.com/thumbnail?id=1bcUxkePmPWulRjRNt1nEiVm0C2k48l1b&sz=w400', full: 'https://drive.google.com/thumbnail?id=1bcUxkePmPWulRjRNt1nEiVm0C2k48l1b&sz=w800' },
+    { type: 'image', thumb: 'https://drive.google.com/thumbnail?id=1uSGZfu-mAhdPaA2ZSD_JcyEBUUWyJEMK&sz=w400', full: 'https://drive.google.com/thumbnail?id=1uSGZfu-mAhdPaA2ZSD_JcyEBUUWyJEMK&sz=w800' },
+    { type: 'image', thumb: 'https://drive.google.com/thumbnail?id=12M-OQSYeoxlJK4DKZbKf5dFQ71YwHrLW&sz=w400', full: 'https://drive.google.com/thumbnail?id=12M-OQSYeoxlJK4DKZbKf5dFQ71YwHrLW&sz=w800' },
+    { type: 'image', thumb: 'https://drive.google.com/thumbnail?id=1TlZPd80p-WkOUp_rLQmPBjRrrpDUT01m&sz=w400', full: 'https://drive.google.com/thumbnail?id=1TlZPd80p-WkOUp_rLQmPBjRrrpDUT01m&sz=w800' },
+    { type: 'image', thumb: 'https://drive.google.com/thumbnail?id=1RtBFgZC5-g2KTsIi8sMeuKVW15qd5zLk&sz=w400', full: 'https://drive.google.com/thumbnail?id=1RtBFgZC5-g2KTsIi8sMeuKVW15qd5zLk&sz=w800' },
+    { type: 'image', thumb: 'https://drive.google.com/thumbnail?id=1E_my9_b0gowUoUxbrudxz7Z0OeYFNDbn&sz=w400', full: 'https://drive.google.com/thumbnail?id=1E_my9_b0gowUoUxbrudxz7Z0OeYFNDbn&sz=w800' },
+    { type: 'image', thumb: 'https://drive.google.com/thumbnail?id=10otx0CEC9_fBF_DttNvPigj_u_0nMxSW&sz=w400', full: 'https://drive.google.com/thumbnail?id=10otx0CEC9_fBF_DttNvPigj_u_0nMxSW&sz=w800' },
+    { type: 'video', thumb: 'https://drive.google.com/thumbnail?id=1XZa_kkV5KX4blGKnRRVf1AhAlyf51CEN&sz=w400', videoSrc: 'https://drive.google.com/file/d/1XZa_kkV5KX4blGKnRRVf1AhAlyf51CEN/preview' }
 ];
 
 // Остальные отрасли – заглушки по 6 фото
@@ -521,12 +523,12 @@ function renderGallery(items) {
     let html = '';
     items.forEach((item, idx) => {
         if (item.type === 'video') {
-            html += `<div class="gallery-item" onclick="window.open('${item.link}', '_blank')">
+            html += `<div class="gallery-item" onclick="openLightboxVideo('${item.videoSrc}')">
                         <img src="${item.thumb}" alt="Видео">
                         <div class="video-overlay"></div>
                      </div>`;
         } else {
-            html += `<div class="gallery-item" onclick="openLightbox('${item.full}')">
+            html += `<div class="gallery-item" onclick="openLightboxImage('${item.full}')">
                         <img src="${item.thumb}" alt="Пример работы">
                      </div>`;
         }
@@ -655,13 +657,30 @@ function updateToggleAllButton() {
 }
 
 // Лайтбокс
-function openLightbox(src) {
+function openLightboxImage(src) {
     document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightboxImg').style.display = 'block';
+    document.getElementById('lightboxVideo').style.display = 'none';
+    document.getElementById('lightboxVideo').src = '';
     document.getElementById('lightbox').classList.add('show');
 }
+
+function openLightboxVideo(src) {
+    document.getElementById('lightboxImg').style.display = 'none';
+    document.getElementById('lightboxImg').src = '';
+    document.getElementById('lightboxVideo').src = src;
+    document.getElementById('lightboxVideo').style.display = 'block';
+    document.getElementById('lightbox').classList.add('show');
+}
+
 function closeLightbox() {
     document.getElementById('lightbox').classList.remove('show');
+    document.getElementById('lightboxImg').src = '';
+    document.getElementById('lightboxVideo').src = '';
+    document.getElementById('lightboxImg').style.display = 'none';
+    document.getElementById('lightboxVideo').style.display = 'none';
 }
+
 document.getElementById('lightbox').addEventListener('click', function(e) {
     if (e.target === this) closeLightbox();
 });
