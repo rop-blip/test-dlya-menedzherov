@@ -50,7 +50,7 @@
 
         /* Галерея */
         .gallery { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
-        .gallery-item { width: 120px; height: 90px; border-radius: 4px; overflow: hidden; cursor: pointer; border: 1px solid #ddd; transition: transform 0.2s; }
+        .gallery-item { width: 120px; height: 120px; border-radius: 4px; overflow: hidden; cursor: pointer; border: 1px solid #ddd; transition: transform 0.2s; }
         .gallery-item:hover { transform: scale(1.05); border-color: #2b579a; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -151,9 +151,17 @@
 </div>
 
 <script>
-// ==================== ДАННЫЕ ПО ОТРАСЛЯМ ====================
-const placeholderMini = (label) => `https://via.placeholder.com/120x90/2b579a/ffffff?text=${encodeURIComponent(label)}`;
+// ==================== ДАННЫЕ ПО ОТРАСЛЯМ (6 фото на отрасль) ====================
+const placeholderMini = (label) => `https://via.placeholder.com/120x120/2b579a/ffffff?text=${encodeURIComponent(label)}`;
 const placeholderBig = (label) => `https://via.placeholder.com/800x600/2b579a/ffffff?text=${encodeURIComponent(label)}`;
+
+// Функция для создания 6 плейсхолдеров
+const makeGallery = (prefix) => {
+    return Array.from({ length: 6 }, (_, i) => ({
+        thumb: placeholderMini(`${prefix} ${i+1}`),
+        full: placeholderBig(`${prefix} ${i+1}`)
+    }));
+};
 
 const industryData = {
     pharma: {
@@ -170,11 +178,7 @@ const industryData = {
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, есть ли сейчас потребность в изготовлении или ремонте деталей для оборудования? Я готов оперативно просчитать стоимость и сроки по вашим чертежам или эскизам.»' }
         ],
-        gallery: [
-            { thumb: placeholderMini('Фарма 1'), full: placeholderBig('Фарма 1') },
-            { thumb: placeholderMini('Фарма 2'), full: placeholderBig('Фарма 2') },
-            { thumb: placeholderMini('Фарма 3'), full: placeholderBig('Фарма 3') }
-        ]
+        gallery: makeGallery('Фарма')
     },
     packaging: {
         name: "📦 Упаковка (пластмассовые изделия)",
@@ -190,10 +194,7 @@ const industryData = {
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, есть ли сейчас потребность в замене или ремонте деталей для вашего оборудования? Я готов оперативно просчитать стоимость и сроки по вашим чертежам или эскизам.»' }
         ],
-        gallery: [
-            { thumb: placeholderMini('Упаковка 1'), full: placeholderBig('Упаковка 1') },
-            { thumb: placeholderMini('Упаковка 2'), full: placeholderBig('Упаковка 2') }
-        ]
+        gallery: makeGallery('Упаковка')
     },
     paper: {
         name: "📄 Бумага и картон (прочие изделия)",
@@ -209,9 +210,7 @@ const industryData = {
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, какие детали вашего оборудования требуют наиболее частой замены? Я готов оперативно просчитать стоимость и сроки изготовления по вашим чертежам.»' }
         ],
-        gallery: [
-            { thumb: placeholderMini('Бумага 1'), full: placeholderBig('Бумага 1') }
-        ]
+        gallery: makeGallery('Бумага')
     },
     hygiene: {
         name: "🧻 Бумажные изделия хоз.-бытового назначения",
@@ -227,9 +226,7 @@ const industryData = {
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, есть ли сейчас потребность в изготовлении или ремонте деталей для ваших конвертинг-линий? Я готов оперативно просчитать стоимость и сроки по вашим чертежам или эскизам.»' }
         ],
-        gallery: [
-            { thumb: placeholderMini('Гигиена 1'), full: placeholderBig('Гигиена 1') }
-        ]
+        gallery: makeGallery('Гигиена')
     },
     instruments: {
         name: "🔬 Приборы и инструменты (измерение, тестирование)",
@@ -245,9 +242,7 @@ const industryData = {
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, есть ли сейчас потребность в изготовлении прецизионных деталей для ваших приборов? Я готов оперативно просчитать стоимость и сроки по вашим чертежам.»' }
         ],
-        gallery: [
-            { thumb: placeholderMini('Приборы 1'), full: placeholderBig('Приборы 1') }
-        ]
+        gallery: makeGallery('Приборы')
     },
     food: {
         name: "🍔 Машины для пищевой промышленности",
@@ -263,9 +258,7 @@ const industryData = {
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, есть ли сейчас потребность в изготовлении или ремонте деталей для вашего пищевого оборудования? Я готов оперативно просчитать стоимость и сроки по вашим чертежам.»' }
         ],
-        gallery: [
-            { thumb: placeholderMini('Пищевое 1'), full: placeholderBig('Пищевое 1') }
-        ]
+        gallery: makeGallery('Пищевое')
     },
     research: {
         name: "🔭 Научные исследования и разработки",
@@ -281,9 +274,7 @@ const industryData = {
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, есть ли сейчас потребность в изготовлении деталей для вашего научного оборудования? Я готов оперативно просчитать стоимость и сроки по вашим чертежам или техническому заданию.»' }
         ],
-        gallery: [
-            { thumb: placeholderMini('Наука 1'), full: placeholderBig('Наука 1') }
-        ]
+        gallery: makeGallery('Наука')
     },
     medical: {
         name: "⚕️ Медицинские инструменты и оборудование",
@@ -299,9 +290,7 @@ const industryData = {
             { id:'E', icon:'📞', title:'Д. Призыв к действию', goal:'Вовлечь в диалог, получить чертежи',
               text:'«Скажите, есть ли сейчас потребность в изготовлении деталей для вашего медицинского оборудования? Я готов оперативно просчитать стоимость и сроки по вашим чертежам или эскизам.»' }
         ],
-        gallery: [
-            { thumb: placeholderMini('Медицина 1'), full: placeholderBig('Медицина 1') }
-        ]
+        gallery: makeGallery('Медицина')
     }
 };
 
@@ -401,7 +390,7 @@ const objections = [
         { q: "Не интересно", answers: [
             "[Имя], я работаю со многими фирмами и когда слышу «не интересно» – это либо нет средств, либо просто нет интереса. Я уверен на 100%, вы заинтересуетесь нашим предложением. Уделите мне буквально пару минут.",
             "Подскажите, пожалуйста, почему такая позиция? Как я понял, вы часто сталкиваетесь с [проблемы клиента] и из-за этого несете убытки. Я уверен, вас это не устраивает, верно? Мы же гарантируем, что подобных ситуаций не будет при сотрудничестве с нами.",
-            "Хорошо, если вам не интересно наше предложение, я задам вам 3 вопроса, если вы на них ответите положительно, значит сотрудничество с нами всё-таки принесёт вам результат.\n• Вы хотиte сэкономить на изготовлении деталей до 20% стоимости?\n• Вы хотите увеличить сроки эксплуатации оборудования за счет использования деталей высокого качества?\n• Вы заинтересованы в сотрудничестве с организацией, которая предложит лучшие условия по доставке, изготовлению деталей?\nМы дорожим каждым клиентом. Уверен, вы сами это оцените. Давайте закажем пробную партию?"
+            "Хорошо, если вам не интересно наше предложение, я задам вам 3 вопроса, если вы на них ответите положительно, значит сотрудничество с нами всё-таки принесёт вам результат.\n• Вы хотите сэкономить на изготовлении деталей до 20% стоимости?\n• Вы хотите увеличить сроки эксплуатации оборудования за счет использования деталей высокого качества?\n• Вы заинтересованы в сотрудничестве с организацией, которая предложит лучшие условия по доставке, изготовлению деталей?\nМы дорожим каждым клиентом. Уверен, вы сами это оцените. Давайте закажем пробную партию?"
         ]}
     ]},
     { group: "📌 Подумаю / совет", items: [
@@ -534,7 +523,7 @@ function renderIlyaBlocks(industryKey) {
     // Галерея (раскрывающаяся панель)
     if (data.gallery && data.gallery.length > 0) {
         html += `<div class="script-block collapsed" id="ilya-gallery">
-            <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">📸 Примеры работ</span></span><span class="block-goal">Нажмите для увеличения</span></div>
+            <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">📸 Примеры готовых деталей</span></span><span class="block-goal">Нажмите для увеличения</span></div>
             <div class="block-body">${renderGallery(data.gallery)}</div></div>`;
     }
     container.innerHTML = html;
