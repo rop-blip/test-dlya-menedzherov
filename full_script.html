@@ -5,18 +5,30 @@
     <title>Скрипт для отдела продаж "Паркс-инжиниринг" – все отрасли</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; padding: 20px; font-size: 13px; transition: background 0.3s, color 0.3s; }
-        body.dark { background: #1e1e1e; color: #ddd; }
-        .workspace { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
-        .card { background: #fff; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: background 0.3s, border-color 0.3s; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; padding: 20px; font-size: 13px; }
+        body.dark { background: #1e1e1e; color: #ccc; }
         body.dark .card { background: #2a2a2a; border-color: #444; }
-        .card-header { background: #f5f5f5; padding: 16px 20px; border-bottom: 1px solid #ddd; display: flex; flex-direction: column; gap: 6px; transition: background 0.3s, border-color 0.3s; }
-        body.dark .card-header { background: #333; border-color: #444; }
-        .header-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; width: 100%; }
-        .header-title h2 { font-size: 24px; font-weight: 700; color: #1a3a5c; margin: 0; line-height: 1.2; transition: color 0.3s; }
-        body.dark .header-title h2 { color: #e0e0e0; }
-        .header-subtitle { font-size: 12px; color: #666; margin-top: 2px; transition: color 0.3s; }
+        body.dark .card-header { background: #333; border-bottom-color: #444; }
+        body.dark .header-title h2 { color: #ddd; }
         body.dark .header-subtitle { color: #aaa; }
+        body.dark .btn { background: #444; color: #ddd; border-color: #555; }
+        body.dark .btn-primary { background: #2b579a; border-color: #2b579a; }
+        body.dark .industry-select select { background: #444; color: #ddd; border-color: #555; }
+        body.dark .script-block { border-color: #444; }
+        body.dark .block-header { background: #333; }
+        body.dark .block-header:hover { background: #3a3a3a; }
+        body.dark .script-text { background: #2a2a2a; border-left-color: #2b579a; }
+        body.dark .block-body { background: #1e1e1e; }
+        body.dark .gallery-item { border-color: #444; }
+        body.dark .obj-group-title { background: #333; }
+        body.dark .obj-group-content { background: #2a2a2a; }
+
+        .workspace { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        .card { background: #fff; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .card-header { background: #f5f5f5; padding: 16px 20px; border-bottom: 1px solid #ddd; display: flex; flex-direction: column; gap: 6px; }
+        .header-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; width: 100%; }
+        .header-title h2 { font-size: 24px; font-weight: 700; color: #1a3a5c; margin: 0; line-height: 1.2; }
+        .header-subtitle { font-size: 12px; color: #666; margin-top: 2px; }
         .card-body { padding: 16px 20px; }
 
         .logo-area { display: flex; align-items: center; margin-right: 16px; }
@@ -25,59 +37,87 @@
 
         .approach-tabs { display: flex; gap: 12px; margin-bottom: 20px; }
         .approach-tab { flex: 1; padding: 14px 20px; border: 2px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; text-align: center; font-size: 16px; font-weight: 600; color: #666; transition: all 0.2s; }
-        body.dark .approach-tab { background: #333; border-color: #555; color: #ccc; }
+        body.dark .approach-tab { background: #2a2a2a; border-color: #444; color: #aaa; }
         .approach-tab.active { border-color: #2b579a; color: #2b579a; background: #e8f0fe; }
-        body.dark .approach-tab.active { background: #2b3a5c; color: #e8f0fe; border-color: #4a7fbe; }
+        body.dark .approach-tab.active { background: #1e3a5f; }
         .approach-tab:hover { border-color: #2b579a; }
 
         .industry-select { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
         .industry-select label { font-weight: 600; }
-        .industry-select select { padding: 8px 12px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px; transition: background 0.3s, color 0.3s; }
-        body.dark .industry-select select { background: #444; color: #ddd; border-color: #666; }
+        .industry-select select { padding: 8px 12px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px; }
 
-        .industry-description { font-size: 12px; color: #444; margin-bottom: 16px; line-height: 1.6; transition: color 0.3s; }
-        body.dark .industry-description { color: #ccc; }
-        .industry-description .desc-line { margin-bottom: 2px; display: flex; align-items: flex-start; gap: 4px; }
-        .parts-icon { color: #e67e22; font-weight: bold; flex-shrink: 0; }
-        .industry-icon { flex-shrink: 0; }
+        .industry-description { font-size: 12px; color: #444; margin-bottom: 16px; line-height: 1.6; }
+        body.dark .industry-description { color: #bbb; }
+        .industry-description .desc-line { margin-bottom: 2px; }
+        .industry-description .marker { color: #2b579a; font-weight: bold; margin-right: 4px; }
+        body.dark .industry-description .marker { color: #5a9cf8; }
+
+        .equipment-term {
+            color: #2b579a;
+            text-decoration: underline dotted;
+            cursor: help;
+            position: relative;
+        }
+        body.dark .equipment-term { color: #5a9cf8; }
+        .equipment-term:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            font-size: 12px;
+            z-index: 10;
+            pointer-events: none;
+        }
 
         .switch-tabs { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 16px; flex-wrap: wrap; }
+        body.dark .switch-tabs { border-bottom-color: #444; }
         .switch-tab { padding: 8px 16px; cursor: pointer; border: none; background: none; font-size: 13px; color: #666; border-bottom: 2px solid transparent; margin-bottom: -2px; white-space: nowrap; }
-        body.dark .switch-tab { color: #aaa; }
         .switch-tab.active { color: #2b579a; border-bottom-color: #2b579a; font-weight: 600; }
-        body.dark .switch-tab.active { color: #4a7fbe; }
+        body.dark .switch-tab { color: #aaa; }
+        body.dark .switch-tab.active { color: #5a9cf8; border-bottom-color: #5a9cf8; }
 
-        .script-block { border: 1px solid #ddd; border-radius: 6px; margin-bottom: 12px; overflow: hidden; transition: background 0.3s, border-color 0.3s; }
-        body.dark .script-block { background: #2a2a2a; border-color: #444; }
-        .block-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #fafafa; cursor: pointer; user-select: none; transition: background 0.3s; }
-        body.dark .block-header { background: #333; }
+        .script-block { border: 1px solid #ddd; border-radius: 6px; margin-bottom: 12px; overflow: hidden; }
+        .block-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #fafafa; cursor: pointer; user-select: none; }
         .block-header:hover { background: #f0f0f0; }
-        body.dark .block-header:hover { background: #444; }
         .block-title { font-weight: 600; }
         .block-goal { font-size: 12px; color: #888; }
-        .block-body { padding: 12px 14px; border-top: 1px solid #ddd; background: #fff; transition: background 0.3s, border-color 0.3s; }
-        body.dark .block-body { background: #333; border-color: #555; }
-        .script-text { background: #f9f9f9; border-left: 3px solid #2b579a; padding: 10px 14px; border-radius: 4px; font-style: italic; margin-bottom: 8px; white-space: pre-line; font-size: 14px; line-height: 1.35; transition: background 0.3s; }
-        body.dark .script-text { background: #444; }
+        .block-body { padding: 12px 14px; border-top: 1px solid #ddd; background: #fff; }
+        .script-text { background: #f9f9f9; border-left: 3px solid #2b579a; padding: 10px 14px; border-radius: 4px; font-style: italic; margin-bottom: 8px; white-space: pre-line; font-size: 14px; line-height: 1.35; }
         .collapsed .block-body { display: none; }
         .collapsed .arrow { transform: rotate(0deg); }
         .arrow { transition: transform 0.2s; display: inline-block; width: 20px; text-align: center; }
+        .copy-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 8px;
+            color: #888;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .copy-btn:hover { color: #2b579a; background: #e8f0fe; }
+        body.dark .copy-btn { color: #aaa; }
+        body.dark .copy-btn:hover { color: #5a9cf8; background: #1e3a5f; }
 
         .script-speech { }
         .script-condition-positive { color: #2e7d32; font-weight: bold; margin: 4px 0; display: flex; align-items: center; gap: 4px; }
         .script-condition-negative { color: #c62828; font-weight: bold; margin: 4px 0; display: flex; align-items: center; gap: 4px; }
         .script-condition-neutral { color: #555; font-weight: bold; margin: 4px 0; display: flex; align-items: center; gap: 4px; }
-        body.dark .script-condition-neutral { color: #ccc; }
         .script-line { margin-bottom: 4px; }
 
         .brief-label, .detail-label { font-weight: 700; display: inline-block; margin-right: 4px; font-style: normal; }
         .brief-label { color: #2e7d32; }
         .detail-label { color: #1a3a5c; }
-        body.dark .detail-label { color: #4a7fbe; }
 
         .gallery { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
         .gallery-item { width: 120px; height: 120px; border-radius: 4px; overflow: hidden; cursor: pointer; border: 1px solid #ddd; transition: transform 0.2s; position: relative; }
-        body.dark .gallery-item { border-color: #555; }
         .gallery-item:hover { transform: scale(1.05); border-color: #2b579a; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -87,66 +127,54 @@
         .lightbox-close { position: absolute; top: 20px; right: 30px; font-size: 40px; color: #fff; cursor: pointer; background: none; border: none; line-height: 1; }
 
         .objections-panel { position: fixed; top: 0; right: 0; width: 480px; height: 100vh; background: #fff; box-shadow: -2px 0 12px rgba(0,0,0,0.1); transform: translateX(100%); transition: transform 0.3s, width 0.3s, height 0.3s; z-index: 1000; display: flex; flex-direction: column; }
-        body.dark .objections-panel { background: #2a2a2a; box-shadow: -2px 0 12px rgba(0,0,0,0.4); }
+        body.dark .objections-panel { background: #2a2a2a; }
         .objections-panel.open { transform: translateX(0); }
         .objections-panel.fullscreen { width: 100vw; height: 100vh; }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #ddd; background: #fff; transition: background 0.3s, border-color 0.3s; }
-        body.dark .panel-header { background: #333; border-color: #555; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #ddd; background: #fff; flex-wrap: wrap; gap: 8px; }
+        body.dark .panel-header { background: #333; border-bottom-color: #444; }
         .panel-body { flex: 1; overflow-y: auto; padding: 16px; font-size: 14px; }
         .obj-group { margin-bottom: 16px; border: 1px solid #eee; border-radius: 4px; overflow: hidden; }
         body.dark .obj-group { border-color: #444; }
-        .obj-group-title { font-weight: 700; font-size: 14px; color: #1a3a5c; padding: 10px 12px; background: #f9f9f9; cursor: pointer; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid transparent; transition: background 0.3s, color 0.3s; }
+        .obj-group-title { font-weight: 700; font-size: 14px; color: #1a3a5c; padding: 10px 12px; background: #f9f9f9; cursor: pointer; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid transparent; }
         body.dark .obj-group-title { background: #333; color: #ccc; }
         .obj-group-title:hover { background: #f0f0f0; }
-        body.dark .obj-group-title:hover { background: #444; }
+        body.dark .obj-group-title:hover { background: #3a3a3a; }
         .obj-group-title .group-arrow { transition: transform 0.2s; display: inline-block; }
         .obj-group.expanded .obj-group-title { border-bottom-color: #ddd; }
+        body.dark .obj-group.expanded .obj-group-title { border-bottom-color: #444; }
         .obj-group.expanded .group-arrow { transform: rotate(90deg); }
         .obj-group-content { display: none; padding: 12px; }
+        body.dark .obj-group-content { background: #2a2a2a; }
         .obj-group.expanded .obj-group-content { display: block; }
         .obj-item { margin-bottom: 14px; }
         .obj-question { font-weight: 600; margin-bottom: 6px; color: #c62828; font-size: 14px; }
-        .obj-answer { background: #f9f9f9; padding: 8px 12px; border-left: 3px solid #4caf50; border-radius: 4px; white-space: pre-line; font-size: 13px; margin-bottom: 4px; transition: background 0.3s; }
-        body.dark .obj-answer { background: #444; }
+        .obj-answer { background: #f9f9f9; padding: 8px 12px; border-left: 3px solid #4caf50; border-radius: 4px; white-space: pre-line; font-size: 13px; margin-bottom: 4px; }
+        body.dark .obj-answer { background: #1e1e1e; }
         .obj-answer-list { margin: 4px 0 0 16px; padding: 0; list-style: none; }
         .obj-answer-list li { margin-bottom: 6px; display: flex; gap: 6px; }
         .obj-answer-letter { font-weight: 600; color: #2b579a; min-width: 18px; }
 
         .obj-quick-links { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-        .obj-quick-link { padding: 4px 10px; background: #e8f0fe; color: #2b579a; border-radius: 12px; cursor: pointer; font-size: 12px; white-space: nowrap; border: 1px solid transparent; transition: background 0.3s; }
-        body.dark .obj-quick-link { background: #2b3a5c; color: #ccc; }
+        .obj-quick-link { padding: 4px 10px; background: #e8f0fe; color: #2b579a; border-radius: 12px; cursor: pointer; font-size: 12px; white-space: nowrap; border: 1px solid transparent; }
+        body.dark .obj-quick-link { background: #1e3a5f; color: #5a9cf8; }
         .obj-quick-link:hover { background: #d0e3fc; border-color: #2b579a; }
-        body.dark .obj-quick-link:hover { background: #3a4a6c; }
+        body.dark .obj-quick-link:hover { background: #2a4a7f; }
 
-        .btn { padding: 6px 14px; border-radius: 4px; font-size: 13px; cursor: pointer; border: 1px solid #ccc; background: #fff; color: #333; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s, border-color 0.2s; }
-        body.dark .btn { background: #444; color: #ddd; border-color: #666; }
+        .search-input { padding: 8px 12px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px; width: 150px; }
+        body.dark .search-input { background: #444; border-color: #555; color: #ddd; }
+
+        .btn { padding: 6px 14px; border-radius: 4px; font-size: 13px; cursor: pointer; border: 1px solid #ccc; background: #fff; color: #333; display: inline-flex; align-items: center; gap: 6px; }
         .btn-primary { background: #2b579a; color: white; border-color: #2b579a; font-size: 13px; }
         .btn-danger { background: none; border: 1px solid #dc3545; color: #dc3545; }
         .btn-light { border: 1px solid #ccc; background: #f9f9f9; }
-        body.dark .btn-light { background: #555; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 999; display: none; }
         .overlay.show { display: block; }
+        .overlay.hidden { display: none; }
 
-        .hint-container { display: flex; align-items: center; background: #e8f0fe; border-radius: 8px; padding: 4px 14px 4px 10px; box-shadow: 0 2px 8px rgba(43,87,154,0.15); flex-shrink: 0; margin-left: 20px; transition: background 0.3s; }
-        body.dark .hint-container { background: #2b3a5c; }
+        .hint-container { display: flex; align-items: center; background: #e8f0fe; border-radius: 8px; padding: 4px 14px 4px 10px; box-shadow: 0 2px 8px rgba(43,87,154,0.15); flex-shrink: 0; margin-left: 20px; }
+        body.dark .hint-container { background: #1e3a5f; }
         .hint-arrow { display: inline-block; width: 0; height: 0; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-left: 20px solid #2b579a; margin-right: 8px; animation: gentle-bounce 2s infinite ease-in-out; }
         @keyframes gentle-bounce { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-6px); } }
-
-        /* кнопка копирования */
-        .copy-btn { background: transparent; border: none; cursor: pointer; font-size: 14px; color: #888; padding: 2px 6px; border-radius: 4px; transition: color 0.2s, background 0.2s; }
-        .copy-btn:hover { color: #333; background: #e0e0e0; }
-        body.dark .copy-btn:hover { color: #fff; background: #555; }
-
-        /* поиск в возражениях */
-        .obj-search { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 12px; font-size: 13px; transition: background 0.3s, color 0.3s; }
-        body.dark .obj-search { background: #444; color: #ddd; border-color: #666; }
-
-        /* цветные кружки вместо эмодзи */
-        .bullet { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2b579a; margin-right: 6px; flex-shrink: 0; }
-
-        /* тема */
-        .theme-toggle { background: none; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 18px; padding: 4px 8px; line-height: 1; }
-        body.dark .theme-toggle { border-color: #666; }
     </style>
 </head>
 <body>
@@ -161,8 +189,8 @@
                     </div>
                     <h2>📞 Скрипт для отдела продаж "Паркс-инжиниринг"</h2>
                 </div>
-                <div style="display: flex; gap: 8px; align-items: center;">
-                    <button class="theme-toggle" id="themeToggle" title="Светлая / Тёмная тема">☀️</button>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button class="btn btn-light" onclick="toggleTheme()" title="Тёмная/светлая тема">🌙</button>
                     <div class="hint-container">
                         <span class="hint-arrow"></span>
                         <button class="btn btn-primary" id="openPanelBtn">📋 Возражения и готовые ответы</button>
@@ -219,15 +247,13 @@
 <div class="objections-panel" id="objPanel">
     <div class="panel-header">
         <h3 style="font-size:16px;">🛡️ Возражения и готовые ответы</h3>
-        <div style="display: flex; gap: 8px;">
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <input type="text" class="search-input" id="objSearch" placeholder="Поиск..." oninput="renderObjections()">
             <button class="btn btn-light" id="toggleFullscreenBtn" title="Развернуть на весь экран">⛶</button>
             <button class="btn btn-danger" id="closePanelBtn">✕ Закрыть</button>
         </div>
     </div>
-    <div class="panel-body" id="objContent">
-        <input type="text" class="obj-search" id="objSearch" placeholder="Поиск по возражениям..." oninput="filterObjections()">
-        <div id="objList"></div>
-    </div>
+    <div class="panel-body" id="objContent"></div>
 </div>
 
 <script>
@@ -258,18 +284,67 @@ const makeGallery = (prefix) => {
     }));
 };
 
-// описания отраслей с цветными кружками
+// Тултипы для оборудования
+const equipmentTooltips = {
+    'таблетпрессы': 'Машины для прессования порошкообразных смесей в таблетки заданной формы и веса.',
+    'линии розлива': 'Автоматизированные линии для розлива жидких препаратов во флаконы или ампулы.',
+    'упаковки': 'Оборудование для упаковки готовой продукции: блистеры, коробки, термоусадка.',
+    'лабораторные приборы': 'Приборы для контроля качества: спектрометры, хроматографы, анализаторы.',
+    'пресс-формы': 'Формы для литья под давлением или прессования пластмассовых изделий.',
+    'термопластавтоматы': 'Машины для литья пластмасс под давлением.',
+    'экструдеры': 'Оборудование для непрерывного формования пластиковых профилей, труб, листов.',
+    'выдувные машины': 'Машины для выдува полых пластиковых изделий (бутылки, канистры).',
+    'гофроагрегаты': 'Линии для производства гофрированного картона.',
+    'конвертинг-линии': 'Линии для переработки рулонных материалов в готовые изделия (салфетки, подгузники).',
+    'контрольно-измерительное оборудование': 'Приборы и системы для измерения и контроля параметров продукции.',
+    'линии переработки': 'Оборудование для мойки, сортировки, измельчения и переработки пищевого сырья.',
+    'экспериментальное оборудование': 'Установки для научных экспериментов: реакторы, климатические камеры.',
+    'вакуумные камеры': 'Герметичные ёмкости для проведения процессов в вакууме.',
+    'криогенные установки': 'Оборудование для получения и поддержания сверхнизких температур.',
+    'стерилизационное и лабораторное оборудование': 'Автоклавы, сухожары, моечные машины для медицинских изделий.',
+    'буровые установки': 'Машины для бурения скважин.',
+    'насосы высокого давления': 'Насосы для перекачки жидкостей под высоким давлением.',
+    'паровые и газовые турбины': 'Турбины для выработки электроэнергии.',
+    'генераторы': 'Электрические машины для преобразования механической энергии в электрическую.',
+    'сборочные линии': 'Автоматизированные конвейерные линии сборки электронных компонентов.',
+    'испытательные стенды': 'Стенды для проверки параметров и надёжности электронных устройств.',
+    'фасовочное оборудование': 'Машины для фасовки сыпучих и жидких продуктов в тару.',
+    'смесители': 'Оборудование для смешивания компонентов в фармацевтическом и пищевом производстве.',
+    'грануляторы': 'Машины для получения гранул из порошкообразных материалов.',
+    'капсульные машины': 'Оборудование для наполнения и закрытия твёрдых желатиновых капсул.',
+    'блистерные машины': 'Машины для упаковки таблеток и капсул в блистеры.',
+    'этикетировочные машины': 'Оборудование для нанесения этикеток на упаковку.',
+    'термоусадочные машины': 'Машины для упаковки продукции в термоусадочную плёнку.',
+    'резьбонарезные станки': 'Станки для нарезания резьбы на деталях.',
+    'шлифовальные станки': 'Станки для финишной обработки поверхностей.',
+    'фрезерные станки с ЧПУ': 'Станки для обработки металла и пластика по заданной программе.',
+    'токарные станки с ЧПУ': 'Станки для обработки деталей вращения.',
+    'электроэрозионные станки': 'Станки для обработки токопроводящих материалов электрическими разрядами.',
+    'координатно-измерительные машины': 'Приборы для прецизионного измерения геометрии деталей.',
+    'твердомеры': 'Приборы для измерения твёрдости материалов.',
+    'профилометры': 'Приборы для измерения шероховатости поверхности.'
+};
+
+function formatDescription(text) {
+    let html = text;
+    for (const [term, tooltip] of Object.entries(equipmentTooltips)) {
+        const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        html = html.replace(regex, `<span class="equipment-term" data-tooltip="${tooltip}">$1</span>`);
+    }
+    return html;
+}
+
 const industryDescriptions = {
-    pharma: `<div class="desc-line"><span class="bullet"></span> Основные направления: Производство лекарственных препаратов, фармацевтических субстанций, медицинских материалов и ветеринарных средств.</div><div class="desc-line"><span class="bullet"></span> Оборудование: таблетпрессы, линии розлива, упаковки, лабораторные приборы.</div><div class="desc-line"><span class="bullet" style="background:#e67e22;"></span> Потребность в деталях: звёздочки, направляющие, корпуса, лапки захвата, валы, втулки, пресс-инструмент, детали дозаторов, калибровочные пластины.</div>`,
-    packaging: `<div class="desc-line"><span class="bullet"></span> Основные направления: Производство пластмассовых изделий для упаковывания товаров, выдувная тара, пресс-формы.</div><div class="desc-line"><span class="bullet"></span> Оборудование: термопластавтоматы, экструдеры, выдувные машины.</div><div class="desc-line"><span class="bullet" style="background:#e67e22;"></span> Потребность в деталях: пуансоны, матрицы, направляющие, втулки, звёздочки, шнеки, корпуса, плиты, детали выдувных головок.</div>`,
-    paper_hygiene: `<div class="desc-line"><span class="bullet"></span> Основные направления: Производство бумажных изделий хозяйственно-бытового и санитарно-гигиенического назначения, переработка бумаги и картона.</div><div class="desc-line"><span class="bullet"></span> Оборудование: гофроагрегаты, конвертинг-линии.</div><div class="desc-line"><span class="bullet" style="background:#e67e22;"></span> Потребность в деталях: валы протяжки, прижимные ролики, ножи, направляющие, втулки, тиснильные валы, детали резки, скребки.</div>`,
-    instruments: `<div class="desc-line"><span class="bullet"></span> Основные направления: Производство инструментов и приборов для измерения, тестирования и навигации.</div><div class="desc-line"><span class="bullet"></span> Оборудование: контрольно-измерительное оборудование, лабораторные приборы.</div><div class="desc-line"><span class="bullet" style="background:#e67e22;"></span> Потребность в деталях: корпуса датчиков, калибровочные приспособления, валы, втулки, кронштейны, оптические держатели, прецизионные направляющие.</div>`,
-    food: `<div class="desc-line"><span class="bullet"></span> Основные направления: Производство машин и оборудования для пищевых продуктов, напитков и табачных изделий.</div><div class="desc-line"><span class="bullet"></span> Оборудование: линии розлива, упаковки, переработки.</div><div class="desc-line"><span class="bullet" style="background:#e67e22;"></span> Потребность в деталях: звёздочки, направляющие, скребки, валы, втулки, корпуса насосов, детали конвейеров, ножи.</div>`,
-    research: `<div class="desc-line"><span class="bullet"></span> Основные направления: Научные исследования и разработки в области естественных и технических наук.</div><div class="desc-line"><span class="bullet"></span> Оборудование: экспериментальное оборудование, вакуумные камеры, криогенные установки.</div><div class="desc-line"><span class="bullet" style="background:#e67e22;"></span> Потребность в деталях: компоненты вакуумных камер, криогенные штоки, фланцы, держатели образцов, тепловые экраны, элементы оптических систем.</div>`,
-    medical: `<div class="desc-line"><span class="bullet"></span> Основные направления: Производство медицинских инструментов и оборудования, хирургический инструмент, диагностические приборы, имплантаты.</div><div class="desc-line"><span class="bullet"></span> Оборудование: стерилизационное и лабораторное оборудование.</div><div class="desc-line"><span class="bullet" style="background:#e67e22;"></span> Потребность в деталях: компоненты эндоскопов, корпуса приборов, хирургические зажимы, направляющие, валы, втулки, детали имплантатов.</div>`,
-    oil_gas: `<div class="desc-line"><span class="bullet"></span> Основные направления: Нефтесервисные компании, буровое и насосное оборудование, трубопроводная арматура, компрессорные станции.</div><div class="desc-line"><span class="bullet"></span> Оборудование: буровые установки, насосы высокого давления.</div><div class="desc-line"><span class="bullet" style="background:#e67e22;"></span> Потребность в деталях: плунжеры, втулки, клапаны, штуцеры, уплотнительные кольца, детали долот, корпуса насосов.</div>`,
-    energy: `<div class="desc-line"><span class="bullet"></span> Основные направления: Генерирующие компании, турбины, теплообменники, котлы, оборудование для АЭС и ТЭЦ.</div><div class="desc-line"><span class="bullet"></span> Оборудование: паровые и газовые турбины, генераторы.</div><div class="desc-line"><span class="bullet" style="background:#e67e22;"></span> Потребность в деталях: уплотнительные кольца, втулки, лопатки, направляющие, валы, детали горелок, теплообменные пластины.</div>`,
-    electronics: `<div class="desc-line"><span class="bullet"></span> Основные направления: Радиоэлектронная промышленность, телекоммуникационное оборудование, корпуса, волноводы, антенны, печатные платы.</div><div class="desc-line"><span class="bullet"></span> Оборудование: сборочные линии, испытательные стенды.</div><div class="desc-line"><span class="bullet" style="background:#e67e22;"></span> Потребность в деталях: корпуса фильтров, волноводы, кронштейны антенн, теплоотводы, основания плат, прецизионные втулки, стойки.</div>`
+    pharma: `<span class="marker">●</span> Основные направления: Производство лекарственных препаратов, фармацевтических субстанций, медицинских материалов и ветеринарных средств.<br><span class="marker">●</span> Оборудование: таблетпрессы, линии розлива, упаковки, лабораторные приборы.<br><span class="marker">●</span> Потребность в деталях: звёздочки, направляющие, корпуса, лапки захвата, валы, втулки, пресс-инструмент, детали дозаторов, калибровочные пластины.`,
+    packaging: `<span class="marker">●</span> Основные направления: Производство пластмассовых изделий для упаковывания товаров, выдувная тара, пресс-формы.<br><span class="marker">●</span> Оборудование: термопластавтоматы, экструдеры, выдувные машины.<br><span class="marker">●</span> Потребность в деталях: пуансоны, матрицы, направляющие, втулки, звёздочки, шнеки, корпуса, плиты, детали выдувных головок.`,
+    paper_hygiene: `<span class="marker">●</span> Основные направления: Производство бумажных изделий хозяйственно-бытового и санитарно-гигиенического назначения, переработка бумаги и картона.<br><span class="marker">●</span> Оборудование: гофроагрегаты, конвертинг-линии.<br><span class="marker">●</span> Потребность в деталях: валы протяжки, прижимные ролики, ножи, направляющие, втулки, тиснильные валы, детали резки, скребки.`,
+    instruments: `<span class="marker">●</span> Основные направления: Производство инструментов и приборов для измерения, тестирования и навигации.<br><span class="marker">●</span> Оборудование: контрольно-измерительное оборудование, лабораторные приборы.<br><span class="marker">●</span> Потребность в деталях: корпуса датчиков, калибровочные приспособления, валы, втулки, кронштейны, оптические держатели, прецизионные направляющие.`,
+    food: `<span class="marker">●</span> Основные направления: Производство машин и оборудования для пищевых продуктов, напитков и табачных изделий.<br><span class="marker">●</span> Оборудование: линии розлива, упаковки, линии переработки.<br><span class="marker">●</span> Потребность в деталях: звёздочки, направляющие, скребки, валы, втулки, корпуса насосов, детали конвейеров, ножи.`,
+    research: `<span class="marker">●</span> Основные направления: Научные исследования и разработки в области естественных и технических наук.<br><span class="marker">●</span> Оборудование: экспериментальное оборудование, вакуумные камеры, криогенные установки.<br><span class="marker">●</span> Потребность в деталях: компоненты вакуумных камер, криогенные штоки, фланцы, держатели образцов, тепловые экраны, элементы оптических систем.`,
+    medical: `<span class="marker">●</span> Основные направления: Производство медицинских инструментов и оборудования, хирургический инструмент, диагностические приборы, имплантаты.<br><span class="marker">●</span> Оборудование: стерилизационное и лабораторное оборудование.<br><span class="marker">●</span> Потребность в деталях: компоненты эндоскопов, корпуса приборов, хирургические зажимы, направляющие, валы, втулки, детали имплантатов.`,
+    oil_gas: `<span class="marker">●</span> Основные направления: Нефтесервисные компании, буровое и насосное оборудование, трубопроводная арматура, компрессорные станции.<br><span class="marker">●</span> Оборудование: буровые установки, насосы высокого давления.<br><span class="marker">●</span> Потребность в деталях: плунжеры, втулки, клапаны, штуцеры, уплотнительные кольца, детали долот, корпуса насосов.`,
+    energy: `<span class="marker">●</span> Основные направления: Генерирующие компании, турбины, теплообменники, котлы, оборудование для АЭС и ТЭЦ.<br><span class="marker">●</span> Оборудование: паровые и газовые турбины, генераторы.<br><span class="marker">●</span> Потребность в деталях: уплотнительные кольца, втулки, лопатки, направляющие, валы, детали горелок, теплообменные пластины.`,
+    electronics: `<span class="marker">●</span> Основные направления: Радиоэлектронная промышленность, телекоммуникационное оборудование, корпуса, волноводы, антенны, печатные платы.<br><span class="marker">●</span> Оборудование: сборочные линии, испытательные стенды.<br><span class="marker">●</span> Потребность в деталях: корпуса фильтров, волноводы, кронштейны антенн, теплоотводы, основания плат, прецизионные втулки, стойки.`
 };
 
 const industryData = {
@@ -653,12 +728,18 @@ function renderIlyaBlocks(industryKey) {
     let html = '';
     data.blocks.forEach((b, i) => {
         html += `<div class="script-block collapsed" id="ilya-${i}">
-            <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">${b.icon} ${b.title}</span></span><span class="block-goal">${b.goal} <button class="copy-btn" title="Скопировать" onclick="event.stopPropagation(); copyBlock('ilya-${i}')">📋</button></span></div>
+            <div class="block-header" onclick="toggleBlock(this)">
+                <span><span class="arrow">▶</span> <span class="block-title">${b.icon} ${b.title}</span></span>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                    <span class="block-goal">${b.goal}</span>
+                    <button class="copy-btn" title="Скопировать текст блока" onclick="event.stopPropagation(); copyBlockText('${b.id}')">📋</button>
+                </div>
+            </div>
             <div class="block-body"><div class="script-text">${b.text}</div></div></div>`;
     });
     if (data.gallery && data.gallery.length > 0) {
         html += `<div class="script-block collapsed" id="ilya-gallery">
-            <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">📸 Примеры готовых деталей</span></span><span class="block-goal">Нажмите для увеличения <button class="copy-btn" title="Скопировать" onclick="event.stopPropagation(); copyBlock('ilya-gallery')">📋</button></span></div>
+            <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">📸 Примеры готовых деталей</span></span><span class="block-goal">Нажмите для увеличения</span></div>
             <div class="block-body">${renderGallery(data.gallery)}</div></div>`;
     }
     container.innerHTML = html;
@@ -692,19 +773,19 @@ function renderVladTab(tab) {
     if (tab === 'secretary') {
         vladSecretaryVariants.forEach((v, i) => {
             html += `<div class="script-block collapsed" id="vlad-sec-${i}">
-                <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">${v.title}</span></span><span class="block-goal">Приветствие, проход секретаря <button class="copy-btn" title="Скопировать" onclick="event.stopPropagation(); copyBlock('vlad-sec-${i}')">📋</button></span></div>
+                <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">${v.title}</span></span><span class="block-goal">Приветствие, проход секретаря</span></div>
                 <div class="block-body"><div class="script-text">${renderLines(v.lines)}</div></div></div>`;
         });
     } else if (tab === 'reactions') {
         vladReactions.forEach((r, i) => {
             html += `<div class="script-block collapsed" id="vlad-react-${i}">
-                <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">${r.title}</span></span><span class="block-goal">Ответ менеджера <button class="copy-btn" title="Скопировать" onclick="event.stopPropagation(); copyBlock('vlad-react-${i}')">📋</button></span></div>
+                <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">${r.title}</span></span><span class="block-goal">Ответ менеджера</span></div>
                 <div class="block-body"><div class="script-text">${renderLines(r.lines)}</div></div></div>`;
         });
     } else if (tab === 'lpr') {
         vladLprBlocks.forEach((b, i) => {
             html += `<div class="script-block collapsed" id="vlad-lpr-${i}">
-                <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">${b.title}</span></span><span class="block-goal"> <button class="copy-btn" title="Скопировать" onclick="event.stopPropagation(); copyBlock('vlad-lpr-${i}')">📋</button></span></div>
+                <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">${b.title}</span></span><span class="block-goal"></span></div>
                 <div class="block-body"><div class="script-text">${renderLines(b.lines)}</div></div></div>`;
         });
     }
@@ -712,26 +793,25 @@ function renderVladTab(tab) {
     updateToggleAllButton();
 }
 
-// Копирование блока
-window.copyBlock = function(blockId) {
-    const block = document.getElementById(blockId);
-    if (!block) return;
-    const textEl = block.querySelector('.script-text');
-    if (!textEl) return;
-    const text = textEl.innerText.trim();
-    navigator.clipboard.writeText(text).then(() => {
-        alert('Текст скопирован в буфер обмена');
-    }).catch(() => {
-        prompt('Скопируйте текст:', text);
-    });
-};
-
 window.toggleBlock = function(header) {
     const block = header.parentElement;
     block.classList.toggle('collapsed');
     const arrow = block.querySelector('.arrow');
     if (arrow) arrow.textContent = block.classList.contains('collapsed') ? '▶' : '▼';
     updateToggleAllButton();
+};
+
+window.copyBlockText = function(blockId) {
+    const block = document.getElementById(`ilya-${blockId === 'B' ? 'B' : blockId}`);
+    if (!block) return;
+    const text = block.querySelector('.script-text')?.innerText || '';
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = block.querySelector('.copy-btn');
+        if (btn) {
+            btn.textContent = '✓';
+            setTimeout(() => { btn.textContent = '📋'; }, 1500);
+        }
+    });
 };
 
 function toggleAllBlocks() {
@@ -794,7 +874,48 @@ document.getElementById('lightbox').addEventListener('click', function(e) {
     if (e.target === this) closeLightbox();
 });
 
-// Панель возражений с поиском
+// Тема
+function toggleTheme() {
+    document.body.classList.toggle('dark');
+    const btn = document.querySelector('.header-row .btn-light');
+    if (btn) btn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+}
+
+(function() {
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark');
+        const btn = document.querySelector('.header-row .btn-light');
+        if (btn) btn.textContent = '☀️';
+    }
+})();
+
+// Печать
+function printScript() {
+    const approach = document.querySelector('.approach-tab.active')?.dataset.approach;
+    let content = '';
+    if (approach === 'ilya') {
+        const select = document.getElementById('industrySelect');
+        const data = industryData[select.value];
+        content += `${data.name}\n\n`;
+        data.blocks.forEach(b => {
+            content += `${b.title}\n${b.text}\n\n`;
+        });
+    } else {
+        content += 'Универсальный скрипт\n\n';
+        content += 'Проход секретаря\n';
+        vladSecretaryVariants.forEach(v => { content += `${v.lines.map(l => l.text).join('\n')}\n\n`; });
+        content += 'Реакции секретаря\n';
+        vladReactions.forEach(v => { content += `${v.lines.map(l => l.text).join('\n')}\n\n`; });
+        content += 'Работа с ЛПР\n';
+        vladLprBlocks.forEach(v => { content += `${v.lines.map(l => l.text).join('\n')}\n\n`; });
+    }
+    const w = window.open('', '_blank', 'width=800,height=600');
+    w.document.write(`<pre style="white-space: pre-wrap; font-family: Arial; padding: 20px;">${content}</pre>`);
+    w.document.close();
+}
+
+// Панель возражений с поиском и группировкой
 const overlay = document.getElementById('overlay');
 const panel = document.getElementById('objPanel');
 const toggleFullscreenBtn = document.getElementById('toggleFullscreenBtn');
@@ -805,7 +926,7 @@ document.getElementById('openPanelBtn').onclick = () => {
     panel.classList.remove('fullscreen');
     isFullscreen = false;
     overlay.classList.add('show');
-    renderObjections('');
+    renderObjections();
 };
 
 document.getElementById('closePanelBtn').onclick = () => {
@@ -829,19 +950,25 @@ toggleFullscreenBtn.onclick = () => {
     }
 };
 
-function filterObjections() {
-    const query = document.getElementById('objSearch').value.toLowerCase();
-    renderObjections(query);
-}
-
-function renderObjections(query) {
+function renderObjections() {
+    const search = (document.getElementById('objSearch').value || '').toLowerCase();
     let html = '';
+    html += `<div class="obj-quick-links">`;
     objections.forEach((group, index) => {
-        const filteredItems = query ? group.items.filter(item =>
-            item.q.toLowerCase().includes(query) ||
-            (item.answers && item.answers.some(a => a.toLowerCase().includes(query)))
-        ) : group.items;
-        if (filteredItems.length === 0) return;
+        const visible = group.items.some(item => {
+            return item.q.toLowerCase().includes(search) || item.answers.some(a => a.toLowerCase().includes(search));
+        });
+        if (!search || visible) {
+            html += `<span class="obj-quick-link" data-group-index="${index}">${group.group}</span>`;
+        }
+    });
+    html += `</div>`;
+
+    objections.forEach((group, index) => {
+        const filteredItems = group.items.filter(item => {
+            return !search || item.q.toLowerCase().includes(search) || item.answers.some(a => a.toLowerCase().includes(search));
+        });
+        if (filteredItems.length === 0 && search) return;
         html += `<div class="obj-group collapsed" data-group-index="${index}">`;
         html += `<div class="obj-group-title"><span>${group.group}</span><span class="group-arrow">▶</span></div>`;
         html += `<div class="obj-group-content">`;
@@ -859,7 +986,7 @@ function renderObjections(query) {
         });
         html += `</div></div>`;
     });
-    document.getElementById('objList').innerHTML = html;
+    document.getElementById('objContent').innerHTML = html;
 
     document.querySelectorAll('.obj-group-title').forEach(title => {
         title.addEventListener('click', function(e) {
@@ -867,45 +994,27 @@ function renderObjections(query) {
             group.classList.toggle('expanded');
         });
     });
-}
-
-// Печатная версия
-function printScript() {
-    const approach = document.querySelector('.approach-tab.active')?.dataset.approach;
-    let blocks;
-    if (approach === 'ilya') {
-        blocks = document.querySelectorAll('#approachContent .script-block');
-    } else {
-        blocks = document.querySelectorAll('#vladContent .script-block');
-    }
-    let text = '';
-    blocks.forEach(block => {
-        const titleEl = block.querySelector('.block-title');
-        const textEl = block.querySelector('.script-text');
-        if (titleEl && textEl) {
-            text += titleEl.innerText + '\n' + textEl.innerText + '\n\n';
-        }
+    document.querySelectorAll('.obj-quick-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const index = this.dataset.groupIndex;
+            const group = document.querySelector(`.obj-group[data-group-index="${index}"]`);
+            if (group) {
+                document.querySelectorAll('.obj-group').forEach(g => g.classList.remove('expanded'));
+                group.classList.add('expanded');
+                group.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
     });
-    const win = window.open('', '_blank', 'width=800,height=600');
-    win.document.write('<pre>' + text + '</pre>');
-    win.document.close();
-    win.print();
 }
-
-// Тёмная/светлая тема
-const themeToggle = document.getElementById('themeToggle');
-themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark');
-    themeToggle.textContent = document.body.classList.contains('dark') ? '🌙' : '☀️';
-});
 
 // Обновление описания отрасли при выборе
 document.getElementById('industrySelect').addEventListener('change', function() {
     const desc = industryDescriptions[this.value] || '';
-    document.getElementById('industryDescription').innerHTML = desc;
+    document.getElementById('industryDescription').innerHTML = formatDescription(desc);
     if (document.querySelector('.approach-tab.active')?.dataset.approach === 'ilya') {
         renderIlyaBlocks(this.value);
     }
+    localStorage.setItem('lastIndustry', this.value);
 });
 
 document.getElementById('approachTabs').addEventListener('click', e => {
@@ -915,7 +1024,7 @@ document.getElementById('approachTabs').addEventListener('click', e => {
         renderApproach(e.target.dataset.approach);
         if (e.target.dataset.approach === 'ilya') {
             const select = document.getElementById('industrySelect');
-            document.getElementById('industryDescription').innerHTML = industryDescriptions[select.value] || '';
+            document.getElementById('industryDescription').innerHTML = formatDescription(industryDescriptions[select.value] || '');
         } else {
             document.getElementById('industryDescription').innerHTML = '';
         }
@@ -931,7 +1040,9 @@ document.addEventListener('click', e => {
 });
 
 // Старт
-document.getElementById('industryDescription').innerHTML = industryDescriptions['pharma'] || '';
+const lastIndustry = localStorage.getItem('lastIndustry') || 'pharma';
+document.getElementById('industrySelect').value = lastIndustry;
+document.getElementById('industryDescription').innerHTML = formatDescription(industryDescriptions[lastIndustry] || '');
 renderApproach('ilya');
 </script>
 </body>
