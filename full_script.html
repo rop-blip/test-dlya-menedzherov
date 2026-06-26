@@ -23,9 +23,13 @@
         .approach-tab.active { border-color: #2b579a; color: #2b579a; background: #e8f0fe; }
         .approach-tab:hover { border-color: #2b579a; }
 
-        .industry-select { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        .industry-select { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
         .industry-select label { font-weight: 600; }
         .industry-select select { padding: 8px 12px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px; }
+
+        .industry-description { font-size: 12px; color: #666; margin-bottom: 16px; line-height: 1.4; }
+        .industry-description .parts-line { color: #444; margin-top: 4px; display: flex; align-items: flex-start; gap: 4px; }
+        .parts-icon { color: #e67e22; font-weight: bold; flex-shrink: 0; }
 
         .switch-tabs { display: flex; border-bottom: 2px solid #ddd; margin-bottom: 16px; flex-wrap: wrap; }
         .switch-tab { padding: 8px 16px; cursor: pointer; border: none; background: none; font-size: 13px; color: #666; border-bottom: 2px solid transparent; margin-bottom: -2px; white-space: nowrap; }
@@ -140,6 +144,8 @@
                 </select>
             </div>
 
+            <div id="industryDescription" class="industry-description"></div>
+
             <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
                 <button class="btn btn-light" id="toggleAllBtn" onclick="toggleAllBlocks()">
                     <span id="toggleAllIcon">⇵</span> <span id="toggleAllText">Развернуть всё</span>
@@ -172,7 +178,7 @@
 </div>
 
 <script>
-// ==================== ДАННЫЕ ПО ОТРАСЛЯМ (лишние пробелы убраны во всех блоках Б) ====================
+// ==================== ДАННЫЕ ПО ОТРАСЛЯМ ====================
 const placeholderMini = (label) => `https://via.placeholder.com/120x120/2b579a/ffffff?text=${encodeURIComponent(label)}`;
 const placeholderBig = (label) => `https://via.placeholder.com/800x600/2b579a/ffffff?text=${encodeURIComponent(label)}`;
 
@@ -197,6 +203,20 @@ const makeGallery = (prefix) => {
         thumb: placeholderMini(`${prefix} ${i+1}`),
         full: placeholderBig(`${prefix} ${i+1}`)
     }));
+};
+
+// описания отраслей с примерами деталей
+const industryDescriptions = {
+    pharma: `Производство лекарственных препаратов, фармацевтических субстанций, медицинских материалов и ветеринарных средств. Оборудование: таблетпрессы, линии розлива, упаковки, лабораторные приборы.<br><span class="parts-line"><span class="parts-icon">🔧</span> Потребность в деталях: звёздочки, направляющие, корпуса, лапки захвата, валы, втулки, пресс-инструмент, детали дозаторов, калибровочные пластины.</span>`,
+    packaging: `Производство пластмассовых изделий для упаковывания товаров, выдувная тара, пресс-формы, термопластавтоматы, экструдеры.<br><span class="parts-line"><span class="parts-icon">🔧</span> Потребность в деталях: пуансоны, матрицы, направляющие, втулки, звёздочки, шнеки, корпуса, плиты, детали выдувных головок.</span>`,
+    paper_hygiene: `Производство бумажных изделий хозяйственно-бытового и санитарно-гигиенического назначения, переработка бумаги и картона, гофроагрегаты, конвертинг-линии.<br><span class="parts-line"><span class="parts-icon">🔧</span> Потребность в деталях: валы протяжки, прижимные ролики, ножи, направляющие, втулки, тиснильные валы, детали резки, скребки.</span>`,
+    instruments: `Производство инструментов и приборов для измерения, тестирования и навигации, контрольно-измерительное оборудование, лабораторные приборы.<br><span class="parts-line"><span class="parts-icon">🔧</span> Потребность в деталях: корпуса датчиков, калибровочные приспособления, валы, втулки, кронштейны, оптические держатели, прецизионные направляющие.</span>`,
+    food: `Производство машин и оборудования для пищевых продуктов, напитков и табачных изделий, линии розлива, упаковки, переработки.<br><span class="parts-line"><span class="parts-icon">🔧</span> Потребность в деталях: звёздочки, направляющие, скребки, валы, втулки, корпуса насосов, детали конвейеров, ножи.</span>`,
+    research: `Научные исследования и разработки в области естественных и технических наук, экспериментальное оборудование, вакуумные камеры, криогенные установки.<br><span class="parts-line"><span class="parts-icon">🔧</span> Потребность в деталях: компоненты вакуумных камер, криогенные штоки, фланцы, держатели образцов, тепловые экраны, элементы оптических систем.</span>`,
+    medical: `Производство медицинских инструментов и оборудования, хирургический инструмент, диагностические приборы, имплантаты.<br><span class="parts-line"><span class="parts-icon">🔧</span> Потребность в деталях: компоненты эндоскопов, корпуса приборов, хирургические зажимы, направляющие, валы, втулки, детали имплантатов.</span>`,
+    oil_gas: `Нефтесервисные компании, буровое и насосное оборудование, трубопроводная арматура, компрессорные станции.<br><span class="parts-line"><span class="parts-icon">🔧</span> Потребность в деталях: плунжеры, втулки, клапаны, штуцеры, уплотнительные кольца, детали долот, корпуса насосов.</span>`,
+    energy: `Генерирующие компании, турбины, теплообменники, котлы, оборудование для АЭС и ТЭЦ.<br><span class="parts-line"><span class="parts-icon">🔧</span> Потребность в деталях: уплотнительные кольца, втулки, лопатки, направляющие, валы, детали горелок, теплообменные пластины.</span>`,
+    electronics: `Радиоэлектронная промышленность, телекоммуникационное оборудование, корпуса, волноводы, антенны, печатные платы.<br><span class="parts-line"><span class="parts-icon">🔧</span> Потребность в деталях: корпуса фильтров, волноводы, кронштейны антенн, теплоотводы, основания плат, прецизионные втулки, стойки.</span>`
 };
 
 const industryData = {
@@ -707,7 +727,7 @@ document.getElementById('lightbox').addEventListener('click', function(e) {
     if (e.target === this) closeLightbox();
 });
 
-// Панель возражений с группировкой и быстрыми ссылками
+// Панель возражений
 const overlay = document.getElementById('overlay');
 const panel = document.getElementById('objPanel');
 const toggleFullscreenBtn = document.getElementById('toggleFullscreenBtn');
@@ -789,17 +809,27 @@ function renderObjections() {
     });
 }
 
+// Обновление описания отрасли при выборе
+document.getElementById('industrySelect').addEventListener('change', function() {
+    const desc = industryDescriptions[this.value] || '';
+    document.getElementById('industryDescription').innerHTML = desc;
+    if (document.querySelector('.approach-tab.active')?.dataset.approach === 'ilya') {
+        renderIlyaBlocks(this.value);
+    }
+});
+
 document.getElementById('approachTabs').addEventListener('click', e => {
     if (e.target.classList.contains('approach-tab')) {
         document.querySelectorAll('#approachTabs .approach-tab').forEach(t => t.classList.remove('active'));
         e.target.classList.add('active');
         renderApproach(e.target.dataset.approach);
-    }
-});
-
-document.getElementById('industrySelect').addEventListener('change', function() {
-    if (document.querySelector('.approach-tab.active')?.dataset.approach === 'ilya') {
-        renderIlyaBlocks(this.value);
+        // При переключении на отраслевой – обновить описание
+        if (e.target.dataset.approach === 'ilya') {
+            const select = document.getElementById('industrySelect');
+            document.getElementById('industryDescription').innerHTML = industryDescriptions[select.value] || '';
+        } else {
+            document.getElementById('industryDescription').innerHTML = '';
+        }
     }
 });
 
@@ -811,6 +841,8 @@ document.addEventListener('click', e => {
     }
 });
 
+// Старт
+document.getElementById('industryDescription').innerHTML = industryDescriptions['pharma'] || '';
 renderApproach('ilya');
 </script>
 </body>
