@@ -578,11 +578,11 @@ const topCompanies = {
 function renderTopCompanies(industryKey) {
     const companies = topCompanies[industryKey];
     if (!companies || companies.length === 0) return '';
-    let html = `<details class="top-companies"><summary>🏢 Топ-${companies.length} компаний отрасли</summary><ul>`;
+    let html = `<ul style="margin: 4px 0 0 16px; padding: 0; list-style: none;">`;
     companies.forEach(c => {
-        html += `<li><span class="company-name">${c.name}</span> — <span class="company-detail">${c.detail}</span></li>`;
+        html += `<li style="margin-bottom: 4px;"><span class="company-name">${c.name}</span> — <span class="company-detail">${c.detail}</span></li>`;
     });
-    html += '</ul></details>';
+    html += '</ul>';
     return html;
 }
 
