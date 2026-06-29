@@ -48,7 +48,12 @@
         .industry-select label { font-weight: 600; }
         .industry-select select { padding: 8px 12px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px; }
 
-        .industry-description { font-size: 12px; color: #444; margin-bottom: 16px; line-height: 1.6; }
+        .industry-description { 
+            font-size: 15px; 
+            color: #444; 
+            margin-bottom: 16px; 
+            line-height: 1.7; 
+        }
         body.dark .industry-description { color: #bbb; }
         .industry-description .desc-line { margin-bottom: 2px; }
         .industry-description .marker { color: #2b579a; font-weight: bold; margin-right: 4px; }
@@ -183,15 +188,34 @@
         body.dark .top-companies summary { color: #5a9cf8; }
         .top-companies ul { margin: 4px 0 0 16px; padding: 0; list-style: none; }
         .top-companies li { margin-bottom: 4px; }
-        .company-name { font-weight: 600; }
+        .company-name { font-weight: 600; color: #2b579a; text-decoration: none; border-bottom: 1px dotted #2b579a; }
+        .company-name:hover { border-bottom: 1px solid #2b579a; }
         .company-detail { color: #666; font-size: 11px; }
         body.dark .company-detail { color: #aaa; }
 
         .letter-box { margin-top: 8px; background: #f9f9f9; border: 1px solid #ddd; padding: 10px; border-radius: 4px; }
         .letter-options { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; }
         .letter-options label { display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 13px; }
-        .letter-preview { white-space: pre-line; font-size: 13px; background: #fff; padding: 8px; border: 1px solid #eee; border-radius: 4px; margin-top: 8px; max-height: 300px; overflow-y: auto; }
-        .letter-actions { margin-top: 8px; display: flex; gap: 8px; }
+        .letter-preview { 
+            white-space: pre-line; 
+            font-size: 13px; 
+            background: #fff; 
+            padding: 8px; 
+            border: 1px solid #eee; 
+            border-radius: 4px; 
+            margin-top: 8px; 
+            width: 100%; 
+            font-family: inherit; 
+            resize: vertical; 
+            min-height: 200px;
+            box-sizing: border-box;
+        }
+        body.dark .letter-preview { background: #1e1e1e; border-color: #555; color: #ccc; }
+        .letter-actions { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .letter-manager-field { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+        .letter-manager-field label { font-weight: 500; font-size: 13px; }
+        .letter-manager-field input { padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px; }
+        body.dark .letter-manager-field input { background: #444; border-color: #555; color: #ddd; }
     </style>
 </head>
 <body>
@@ -351,23 +375,23 @@ function formatDescription(text) {
     return html;
 }
 
-// ============= ТОП-20 КОМПАНИЙ (из вашего старого файла) =============
+// ============= ТОП-20 КОМПАНИЙ =============
 const topCompanies = {
     pharma: [
-        { name: "АО «Фармасинтез»", detail: "Производство лекарственных препаратов, субстанций. Выручка ~40 млрд руб." },
-        { name: "АО «Р-Фарм»", detail: "Производство и дистрибуция фармпрепаратов. Выручка ~120 млрд руб." },
-        { name: "АО «Биокад»", detail: "Биотехнологическая компания. Выручка ~30 млрд руб." },
+        { name: "АО «Фармасинтез»", detail: "Производство лекарственных препаратов, субстанций. Выручка ~40 млрд руб.", url: "https://www.pharmasyntez.ru/" },
+        { name: "АО «Р-Фарм»", detail: "Производство и дистрибуция фармпрепаратов. Выручка ~120 млрд руб.", url: "https://r-pharm.com/" },
+        { name: "АО «Биокад»", detail: "Биотехнологическая компания. Выручка ~30 млрд руб.", url: "https://biocad.ru/" },
         { name: "АО «Валента Фарм»", detail: "Инновационные препараты. Выручка ~25 млрд руб." },
-        { name: "ООО «НПО Петровакс Фарм»", detail: "Вакцины и иммунобиологические препараты. Выручка ~20 млрд руб." },
+        { name: "ООО «НПО Петровакс Фарм»", detail: "Вакцины и иммунобиологические препараты. Выручка ~20 млрд руб.", url: "https://petrovax.ru/" },
         { name: "АО «Вертекс»", detail: "Дженерики и оригинальные препараты. Выручка ~18 млрд руб." },
-        { name: "АО «Фармстандарт»", detail: "Крупный производитель лекарств. Выручка ~60 млрд руб." },
-        { name: "ООО «Герофарм»", detail: "Пептидные препараты, дженерики. Выручка ~15 млрд руб." },
+        { name: "АО «Фармстандарт»", detail: "Крупный производитель лекарств. Выручка ~60 млрд руб.", url: "https://pharmstd.ru/" },
+        { name: "ООО «Герофарм»", detail: "Пептидные препараты, дженерики. Выручка ~15 млрд руб.", url: "https://geropharm.ru/" },
         { name: "АО «Отисифарм»", detail: "Безрецептурные препараты. Выручка ~12 млрд руб." },
         { name: "ООО «НТФФ «Полисан»", detail: "Производство субстанций и готовых форм. Выручка ~10 млрд руб." },
         { name: "АО «Синтез»", detail: "Антибиотики и инфузионные растворы. Выручка ~9 млрд руб." },
         { name: "ООО «Гротекс»", detail: "Жидкие лекарственные формы. Выручка ~8 млрд руб." },
         { name: "АО «Кургансинтез»", detail: "Субстанции и готовые формы. Выручка ~7 млрд руб." },
-        { name: "АО «Акрихин»", detail: "Лекарственные препараты. Выручка ~15 млрд руб." },
+        { name: "АО «Акрихин»", detail: "Лекарственные препараты. Выручка ~15 млрд руб.", url: "https://akrikhin.ru/" },
         { name: "ООО «Биннофарм Групп»", detail: "Производство и разработка препаратов. Выручка ~12 млрд руб." },
         { name: "АО «Нижфарм»", detail: "Лекарственные средства. Выручка ~20 млрд руб." },
         { name: "АО «Ирбитский химфармзавод»", detail: "Субстанции и готовые формы. Выручка ~6 млрд руб." },
@@ -376,13 +400,13 @@ const topCompanies = {
         { name: "ООО «Фармамед»", detail: "Производство лекарственных препаратов. Выручка ~3.5 млрд руб." }
     ],
     packaging: [
-        { name: "Группа «Полипластик»", detail: "Производство пластиковых труб и компаундов. Выручка ~80 млрд руб." },
-        { name: "АО «Роснано»", detail: "Инвестиции в упаковочные проекты. Масштаб — крупный." },
+        { name: "Группа «Полипластик»", detail: "Производство пластиковых труб и компаундов. Выручка ~80 млрд руб.", url: "https://polyplastic.ru/" },
+        { name: "АО «Роснано»", detail: "Инвестиции в упаковочные проекты. Масштаб — крупный.", url: "https://www.rusnano.ru/" },
         { name: "ООО «Данафлекс»", detail: "Гибкая упаковка. Выручка ~10 млрд руб." },
         { name: "АО «Тико-Пластик»", detail: "Упаковочные материалы. Выручка ~5 млрд руб." },
         { name: "ГК «Орион»", detail: "Упаковка из пластмасс. Выручка ~3 млрд руб." },
         { name: "ООО «Европласт»", detail: "Производство упаковки. Выручка ~4 млрд руб." },
-        { name: "АО «Готэк»", detail: "Гофроупаковка и упаковка из пластика. Выручка ~12 млрд руб." },
+        { name: "АО «Готэк»", detail: "Гофроупаковка и упаковка из пластика. Выручка ~12 млрд руб.", url: "https://gotec.ru/" },
         { name: "ООО «Сегежская упаковка»", detail: "Бумажная и пластиковая упаковка. Выручка ~6 млрд руб." },
         { name: "ГК «Элис»", detail: "Пластиковая упаковка. Выручка ~2 млрд руб." },
         { name: "ООО «Полимерпак»", detail: "Производство упаковки из пластмасс. Выручка ~2.5 млрд руб." },
@@ -399,12 +423,12 @@ const topCompanies = {
     ],
     paper_hygiene: [
         { name: "АО «Сыктывкар Тиссью Груп»", detail: "Бумажные санитарно-гигиенические изделия. Выручка ~10 млрд руб." },
-        { name: "ООО «Хаят Россия»", detail: "Производство бумажной продукции. Выручка ~15 млрд руб." },
-        { name: "АО «Монди Сыктывкарский ЛПК»", detail: "Целлюлозно-бумажная продукция. Выручка ~60 млрд руб." },
+        { name: "ООО «Хаят Россия»", detail: "Производство бумажной продукции. Выручка ~15 млрд руб.", url: "https://hayat.com.tr/ru" },
+        { name: "АО «Монди Сыктывкарский ЛПК»", detail: "Целлюлозно-бумажная продукция. Выручка ~60 млрд руб.", url: "https://www.mondi.com/ru" },
         { name: "ООО «Эссити»", detail: "Товары для гигиены. Выручка ~8 млрд руб." },
         { name: "АО «Пролетарий»", detail: "Производство картона и бумаги. Выручка ~5 млрд руб." },
         { name: "ООО «Кимберли-Кларк»", detail: "Гигиеническая продукция. Выручка ~12 млрд руб." },
-        { name: "АО «Архангельский ЦБК»", detail: "Целлюлозно-бумажная продукция. Выручка ~40 млрд руб." },
+        { name: "АО «Архангельский ЦБК»", detail: "Целлюлозно-бумажная продукция. Выручка ~40 млрд руб.", url: "https://www.acbk.ru/" },
         { name: "ООО «Белла»", detail: "Гигиеническая продукция. Выручка ~6 млрд руб." },
         { name: "АО «Котласский ЦБК»", detail: "Целлюлозно-бумажная продукция. Выручка ~20 млрд руб." },
         { name: "ООО «Корпорация «ПАЛИТРА»", detail: "Бумажная продукция. Выручка ~3 млрд руб." },
@@ -421,7 +445,7 @@ const topCompanies = {
     ],
     instruments: [
         { name: "АО «Концерн «ЦНИИ «Электроприбор»", detail: "Навигационные и измерительные приборы. Выручка ~15 млрд руб." },
-        { name: "АО «Швабе»", detail: "Оптические и измерительные приборы. Выручка ~40 млрд руб." },
+        { name: "АО «Швабе»", detail: "Оптические и измерительные приборы. Выручка ~40 млрд руб.", url: "https://shvabe.ru/" },
         { name: "АО «Концерн «Автоматика»", detail: "Измерительное оборудование. Выручка ~10 млрд руб." },
         { name: "АО «НИИ измерительных приборов»", detail: "Измерительные системы. Выручка ~3 млрд руб." },
         { name: "ООО «Метран»", detail: "Контрольно-измерительные приборы. Выручка ~8 млрд руб." },
@@ -442,20 +466,20 @@ const topCompanies = {
         { name: "АО «Концерн «Моринформсистема-Агат»", detail: "Измерительные системы. Выручка ~9 млрд руб." }
     ],
     food: [
-        { name: "ООО «Черкизово»", detail: "Мясопереработка. Выручка ~150 млрд руб." },
-        { name: "АО «Мираторг»", detail: "Агропромышленный холдинг. Выручка ~200 млрд руб." },
-        { name: "ООО «Данон Россия»", detail: "Молочная продукция. Выручка ~90 млрд руб." },
-        { name: "АО «Вимм-Билль-Данн»", detail: "Молочная продукция и напитки. Выручка ~120 млрд руб." },
-        { name: "ООО «Нестле Россия»", detail: "Пищевые продукты и напитки. Выручка ~150 млрд руб." },
+        { name: "ООО «Черкизово»", detail: "Мясопереработка. Выручка ~150 млрд руб.", url: "https://cherkizovo.com/" },
+        { name: "АО «Мираторг»", detail: "Агропромышленный холдинг. Выручка ~200 млрд руб.", url: "https://miratorg.ru/" },
+        { name: "ООО «Данон Россия»", detail: "Молочная продукция. Выручка ~90 млрд руб.", url: "https://danone.ru/" },
+        { name: "АО «Вимм-Билль-Данн»", detail: "Молочная продукция и напитки. Выручка ~120 млрд руб.", url: "https://wbd.ru/" },
+        { name: "ООО «Нестле Россия»", detail: "Пищевые продукты и напитки. Выручка ~150 млрд руб.", url: "https://nestle.ru/" },
         { name: "АО «Агрокомплекс»", detail: "Мясная и молочная продукция. Выручка ~30 млрд руб." },
         { name: "ООО «Макдоналдс Россия»", detail: "Ресторанный бизнес. Выручка ~60 млрд руб." },
         { name: "АО «Русский хлеб»", detail: "Хлебобулочная продукция. Выручка ~25 млрд руб." },
         { name: "ООО «Каравай»", detail: "Хлебопекарное производство. Выручка ~20 млрд руб." },
         { name: "АО «Останкинский мясоперерабатывающий комбинат»", detail: "Мясопереработка. Выручка ~40 млрд руб." },
-        { name: "ООО «Пивоваренная компания «Балтика»", detail: "Пивоварение. Выручка ~80 млрд руб." },
+        { name: "ООО «Пивоваренная компания «Балтика»", detail: "Пивоварение. Выручка ~80 млрд руб.", url: "https://www.baltika.ru/" },
         { name: "АО «Кондитерский концерн Бабаевский»", detail: "Кондитерские изделия. Выручка ~30 млрд руб." },
         { name: "ООО «Марс»", detail: "Кондитерские изделия и корма. Выручка ~50 млрд руб." },
-        { name: "АО «Эфко»", detail: "Масложировая продукция. Выручка ~100 млрд руб." },
+        { name: "АО «Эфко»", detail: "Масложировая продукция. Выручка ~100 млрд руб.", url: "https://efko.ru/" },
         { name: "ООО «Юнилевер Россия»", detail: "Пищевая продукция. Выручка ~40 млрд руб." },
         { name: "АО «Русский сахар»", detail: "Производство сахара. Выручка ~35 млрд руб." },
         { name: "ООО «ПепсиКо Россия»", detail: "Напитки и снеки. Выручка ~70 млрд руб." },
@@ -464,10 +488,10 @@ const topCompanies = {
         { name: "АО «Молвест»", detail: "Молочная продукция. Выручка ~25 млрд руб." }
     ],
     research: [
-        { name: "АО «НИЦ «Курчатовский институт»", detail: "Многопрофильный научный центр. Выручка ~15 млрд руб." },
+        { name: "АО «НИЦ «Курчатовский институт»", detail: "Многопрофильный научный центр. Выручка ~15 млрд руб.", url: "https://nrcki.ru/" },
         { name: "АО «Концерн «Росэнергоатом»", detail: "Научные исследования в атомной энергетике. Выручка ~300 млрд руб." },
         { name: "АО «ОКБМ Африкантов»", detail: "Атомное машиностроение. Выручка ~20 млрд руб." },
-        { name: "АО «ЦАГИ»", detail: "Аэродинамические исследования. Выручка ~8 млрд руб." },
+        { name: "АО «ЦАГИ»", detail: "Аэродинамические исследования. Выручка ~8 млрд руб.", url: "https://tsagi.ru/" },
         { name: "АО «ГНЦ РФ ИТЭФ»", detail: "Теоретическая и экспериментальная физика. Выручка ~3 млрд руб." },
         { name: "АО «НИИЭФА»", detail: "Электрофизическая аппаратура. Выручка ~5 млрд руб." },
         { name: "АО «ГНЦ РФ ВНИИНМ»", detail: "Неорганические материалы. Выручка ~4 млрд руб." },
@@ -480,14 +504,14 @@ const topCompanies = {
         { name: "АО «НИИграфит»", detail: "Материаловедение. Выручка ~2.2 млрд руб." },
         { name: "АО «НИИ полимеров»", detail: "Полимерные материалы. Выручка ~1.8 млрд руб." },
         { name: "АО «ВНИИМ»", detail: "Метрология и измерения. Выручка ~2.5 млрд руб." },
-        { name: "АО «ГНЦ РФ ВИАМ»", detail: "Авиационные материалы. Выручка ~7 млрд руб." },
+        { name: "АО «ГНЦ РФ ВИАМ»", detail: "Авиационные материалы. Выручка ~7 млрд руб.", url: "https://viam.ru/" },
         { name: "АО «НИИ стали»", detail: "Стальные материалы и защита. Выручка ~3.5 млрд руб." },
         { name: "АО «ЦНИИТОЧМАШ»", detail: "Точное машиностроение. Выручка ~4 млрд руб." },
         { name: "АО «ГосНИИАС»", detail: "Авиационные системы. Выручка ~5 млрд руб." }
     ],
     medical: [
         { name: "АО «Медтехника»", detail: "Производство медицинского оборудования. Выручка ~5 млрд руб." },
-        { name: "ООО «Сименс Здравоохранение»", detail: "Медицинская техника. Выручка ~30 млрд руб." },
+        { name: "ООО «Сименс Здравоохранение»", detail: "Медицинская техника. Выручка ~30 млрд руб.", url: "https://www.siemens-healthineers.com/ru" },
         { name: "АО «Филипс»", detail: "Медицинское оборудование. Выручка ~25 млрд руб." },
         { name: "ООО «Медтроник»", detail: "Имплантаты и инструменты. Выручка ~15 млрд руб." },
         { name: "АО «Эндосервис»", detail: "Эндоскопическое оборудование. Выручка ~2.5 млрд руб." },
@@ -508,15 +532,15 @@ const topCompanies = {
         { name: "ООО «Медси»", detail: "Медицинские услуги и оборудование. Выручка ~20 млрд руб." }
     ],
     oil_gas: [
-        { name: "ПАО «Газпром»", detail: "Газовая отрасль. Выручка ~10 трлн руб." },
-        { name: "ПАО «Роснефть»", detail: "Нефтяная отрасль. Выручка ~8 трлн руб." },
-        { name: "ПАО «Лукойл»", detail: "Нефтяная отрасль. Выручка ~7 трлн руб." },
+        { name: "ПАО «Газпром»", detail: "Газовая отрасль. Выручка ~10 трлн руб.", url: "https://www.gazprom.ru/" },
+        { name: "ПАО «Роснефть»", detail: "Нефтяная отрасль. Выручка ~8 трлн руб.", url: "https://www.rosneft.ru/" },
+        { name: "ПАО «Лукойл»", detail: "Нефтяная отрасль. Выручка ~7 трлн руб.", url: "https://www.lukoil.ru/" },
         { name: "ПАО «Сургутнефтегаз»", detail: "Нефтяная отрасль. Выручка ~2 трлн руб." },
-        { name: "ПАО «Татнефть»", detail: "Нефтяная отрасль. Выручка ~1.5 трлн руб." },
-        { name: "ПАО «НОВАТЭК»", detail: "Газовая отрасль. Выручка ~1.2 трлн руб." },
-        { name: "ООО «Газпром нефть»", detail: "Нефтяная отрасль. Выручка ~3 трлн руб." },
+        { name: "ПАО «Татнефть»", detail: "Нефтяная отрасль. Выручка ~1.5 трлн руб.", url: "https://www.tatneft.ru/" },
+        { name: "ПАО «НОВАТЭК»", detail: "Газовая отрасль. Выручка ~1.2 трлн руб.", url: "https://www.novatek.ru/" },
+        { name: "ООО «Газпром нефть»", detail: "Нефтяная отрасль. Выручка ~3 трлн руб.", url: "https://www.gazprom-neft.ru/" },
         { name: "АО «Зарубежнефть»", detail: "Нефтегазовая отрасль. Выручка ~200 млрд руб." },
-        { name: "ПАО «Транснефть»", detail: "Трубопроводный транспорт. Выручка ~1 трлн руб." },
+        { name: "ПАО «Транснефть»", detail: "Трубопроводный транспорт. Выручка ~1 трлн руб.", url: "https://www.transneft.ru/" },
         { name: "АО «Сахалин Энерджи»", detail: "Нефтегазовая отрасль. Выручка ~400 млрд руб." },
         { name: "ООО «РН-Юганскнефтегаз»", detail: "Нефтедобыча. Выручка ~1 трлн руб." },
         { name: "АО «ТАИФ-НК»", detail: "Нефтепереработка. Выручка ~300 млрд руб." },
@@ -530,11 +554,11 @@ const topCompanies = {
         { name: "АО «Верхнечонскнефтегаз»", detail: "Нефтедобыча. Выручка ~250 млрд руб." }
     ],
     energy: [
-        { name: "ПАО «РусГидро»", detail: "Гидроэнергетика. Выручка ~400 млрд руб." },
+        { name: "ПАО «РусГидро»", detail: "Гидроэнергетика. Выручка ~400 млрд руб.", url: "https://rushydro.ru/" },
         { name: "ПАО «ФСК ЕЭС»", detail: "Электросетевой комплекс. Выручка ~250 млрд руб." },
-        { name: "ПАО «Интер РАО»", detail: "Электроэнергетика. Выручка ~1 трлн руб." },
+        { name: "ПАО «Интер РАО»", detail: "Электроэнергетика. Выручка ~1 трлн руб.", url: "https://www.interrao.ru/" },
         { name: "АО «Концерн Росэнергоатом»", detail: "Атомная энергетика. Выручка ~300 млрд руб." },
-        { name: "ПАО «Мосэнерго»", detail: "Теплоэнергетика. Выручка ~200 млрд руб." },
+        { name: "ПАО «Мосэнерго»", detail: "Теплоэнергетика. Выручка ~200 млрд руб.", url: "https://www.mosenergo.ru/" },
         { name: "ПАО «ТГК-1»", detail: "Теплоэнергетика. Выручка ~100 млрд руб." },
         { name: "ПАО «ОГК-2»", detail: "Генерирующая компания. Выручка ~150 млрд руб." },
         { name: "ПАО «Энел Россия»", detail: "Электроэнергетика. Выручка ~80 млрд руб." },
@@ -546,7 +570,7 @@ const topCompanies = {
         { name: "АО «МОЭК»", detail: "Теплоэнергетика. Выручка ~150 млрд руб." },
         { name: "ПАО «Т Плюс»", detail: "Теплоэнергетика. Выручка ~100 млрд руб." },
         { name: "АО «СО ЕЭС»", detail: "Системный оператор. Выручка ~40 млрд руб." },
-        { name: "ПАО «Россети»", detail: "Электросетевой комплекс. Выручка ~1 трлн руб." },
+        { name: "ПАО «Россети»", detail: "Электросетевой комплекс. Выручка ~1 трлн руб.", url: "https://www.rosseti.ru/" },
         { name: "АО «ДРСК»", detail: "Электросетевой комплекс. Выручка ~30 млрд руб." },
         { name: "ПАО «Томскэнерго»", detail: "Электроэнергетика. Выручка ~25 млрд руб." },
         { name: "АО «Янтарьэнерго»", detail: "Электроэнергетика. Выручка ~20 млрд руб." }
@@ -554,12 +578,12 @@ const topCompanies = {
     electronics: [
         { name: "АО «Российская электроника»", detail: "Электронная промышленность. Выручка ~150 млрд руб." },
         { name: "АО «Концерн «Созвездие»", detail: "Радиоэлектронная аппаратура. Выручка ~25 млрд руб." },
-        { name: "АО «Швабе»", detail: "Оптическая электроника. Выручка ~40 млрд руб." },
-        { name: "АО «Росэлектроника»", detail: "Электронные компоненты. Выручка ~200 млрд руб." },
+        { name: "АО «Швабе»", detail: "Оптическая электроника. Выручка ~40 млрд руб.", url: "https://shvabe.ru/" },
+        { name: "АО «Росэлектроника»", detail: "Электронные компоненты. Выручка ~200 млрд руб.", url: "https://www.ruselectronics.ru/" },
         { name: "АО «НИИ молекулярной электроники»", detail: "Микроэлектроника. Выручка ~5 млрд руб." },
         { name: "ООО «СТМикроэлектроникс»", detail: "Микроэлектронные компоненты. Выручка ~3 млрд руб." },
         { name: "АО «Ангстрем»", detail: "Производство микросхем. Выручка ~4 млрд руб." },
-        { name: "АО «Микрон»", detail: "Микроэлектроника. Выручка ~8 млрд руб." },
+        { name: "АО «Микрон»", detail: "Микроэлектроника. Выручка ~8 млрд руб.", url: "https://www.mikron.ru/" },
         { name: "ООО «Элемент»", detail: "Электронные компоненты. Выручка ~2.5 млрд руб." },
         { name: "АО «НИИЭТ»", detail: "Электронная техника. Выручка ~3.5 млрд руб." },
         { name: "АО «Радиоэлектроника»", detail: "Радиоэлектронная аппаратура. Выручка ~6 млрд руб." },
@@ -580,7 +604,16 @@ function renderTopCompanies(industryKey) {
     if (!companies || companies.length === 0) return '';
     let html = `<ul style="margin: 4px 0 0 16px; padding: 0; list-style: none;">`;
     companies.forEach(c => {
-        html += `<li style="margin-bottom: 4px;"><span class="company-name">${c.name}</span> — <span class="company-detail">${c.detail}</span></li>`;
+        let url;
+        if (c.url) {
+            url = c.url;
+        } else {
+            url = `https://yandex.ru/search/?text=${encodeURIComponent(c.name + ' компания')}`;
+        }
+        html += `<li style="margin-bottom: 4px;">
+            <a href="${url}" target="_blank" class="company-name">${c.name}</a>
+            — <span class="company-detail">${c.detail}</span>
+        </li>`;
     });
     html += '</ul>';
     return html;
@@ -600,7 +633,7 @@ const industryDescriptions = {
     electronics: `<span class="marker">●</span> Основные направления: Радиоэлектронная промышленность, телекоммуникационное оборудование, корпуса, волноводы, антенны, печатные платы.<br><span class="marker">●</span> Оборудование: сборочные линии, испытательные стенды.<br><span class="marker">●</span> Потребность в деталях: корпуса фильтров, волноводы, кронштейны антенн, теплоотводы, основания плат, прецизионные втулки, стойки.`
 };
 
-// Данные отраслей (блок "Б" – полный, с кратким и развёрнутым)
+// Данные отраслей
 const industryData = {
     pharma: {
         name: "💊 Фармацевтика",
@@ -952,16 +985,26 @@ const objections = [
     ]}
 ];
 
-// ==================== ФУНКЦИИ РЕНДЕРИНГА ====================
+// ==================== ФУНКЦИИ ====================
+
+// Функция замены плейсхолдеров (безопасное обращение к полю имени)
+function replacePlaceholders(text) {
+    const nameField = document.getElementById('managerNameLetter');
+    const name = nameField ? nameField.value.trim() : localStorage.getItem('managerName') || 'Имя';
+    // [Название клиента] заменяем на "Компания"
+    return text.replace(/\[Имя\]/g, name).replace(/\[Название клиента\]/g, 'Компания');
+}
+
 function renderLines(lines) {
     return lines.map(line => {
+        let text = replacePlaceholders(line.text);
         let cls = 'script-line';
         let icon = '';
         if (line.type === 'condition-positive') { cls += ' script-condition-positive'; icon = '✅ '; }
         else if (line.type === 'condition-negative') { cls += ' script-condition-negative'; icon = '❌ '; }
         else if (line.type === 'condition-neutral') { cls += ' script-condition-neutral'; icon = '👉 '; }
         else { cls += ' script-speech'; }
-        return `<div class="${cls}">${icon}${line.text}</div>`;
+        return `<div class="${cls}">${icon}${text}</div>`;
     }).join('');
 }
 
@@ -978,6 +1021,7 @@ function renderGallery(items) {
 
 // ---------- ГЕНЕРАТОР ПИСЬМА ----------
 function renderLetterBlock(blocks) {
+    const savedName = localStorage.getItem('managerName') || '';
     let html = `<div class="script-block collapsed" id="ilya-letter">
         <div class="block-header" onclick="toggleBlock(this)">
             <span><span class="arrow">▶</span> <span class="block-title">✉️ Генератор письма</span></span>
@@ -993,14 +1037,25 @@ function renderLetterBlock(blocks) {
         html += `<label><input type="checkbox" data-block="${b.id}" ${checked} onchange="updateLetterPreview()"> ${labels[i] || b.id}</label>`;
     });
     html += `</div>
-                <div id="letterPreview" class="letter-preview"></div>
+                <div class="letter-manager-field">
+                    <label>👤 Ваше имя: <input type="text" id="managerNameLetter" placeholder="Иван" value="${savedName}" oninput="updateLetterPreview()"></label>
+                </div>
+                <textarea id="letterPreview" class="letter-preview" rows="8" spellcheck="false"></textarea>
                 <div class="letter-actions">
                     <button class="btn btn-light" onclick="copyLetter()">📋 Копировать письмо</button>
                 </div>
             </div>
         </div>
     </div>`;
-    setTimeout(updateLetterPreview, 50);
+    setTimeout(() => {
+        updateLetterPreview();
+        const nameField = document.getElementById('managerNameLetter');
+        if (nameField) {
+            nameField.addEventListener('input', function() {
+                localStorage.setItem('managerName', this.value);
+            });
+        }
+    }, 50);
     return html;
 }
 
@@ -1031,17 +1086,19 @@ function updateLetterPreview() {
             text = text.replace(/<[^>]*>/g, '').trim();
             text = text.replace(/["«»]/g, '');
         }
-        if (text) letter += text + '\n\n';
+        if (text) letter += replacePlaceholders(text) + '\n\n';
     });
-    letter += 'С уважением,\n[Имя менеджера]\nКомпания Паркс Инжиниринг';
+    const nameField = document.getElementById('managerNameLetter');
+    const managerName = nameField ? nameField.value.trim() : localStorage.getItem('managerName') || 'Менеджер';
+    letter += 'С уважением,\n' + managerName + '\nКомпания Паркс Инжиниринг';
     const preview = document.getElementById('letterPreview');
-    if (preview) preview.textContent = letter;
+    if (preview) preview.value = letter;
 }
 
 function copyLetter() {
     const preview = document.getElementById('letterPreview');
     if (preview) {
-        navigator.clipboard.writeText(preview.textContent)
+        navigator.clipboard.writeText(preview.value)
             .then(() => alert('Письмо скопировано в буфер обмена!'))
             .catch(() => alert('Не удалось скопировать. Скопируйте текст вручную.'));
     }
@@ -1054,7 +1111,8 @@ function renderIlyaBlocks(industryKey) {
     const container = document.getElementById('approachContent');
     let html = '';
     data.blocks.forEach((b, i) => {
-        html += `<div class="script-block collapsed" id="ilya-${i}">
+        let displayText = replacePlaceholders(b.text);
+        html += `<div class="script-block collapsed" data-block-id="${b.id}">
             <div class="block-header" onclick="toggleBlock(this)">
                 <span><span class="arrow">▶</span> <span class="block-title">${b.icon} ${b.title}</span></span>
                 <div style="display:flex;align-items:center;gap:4px;">
@@ -1062,7 +1120,7 @@ function renderIlyaBlocks(industryKey) {
                     <button class="copy-btn" title="Скопировать текст" onclick="event.stopPropagation(); copyBlockText('${b.id}')">📋</button>
                 </div>
             </div>
-            <div class="block-body"><div class="script-text">${b.text}</div></div>
+            <div class="block-body"><div class="script-text">${displayText}</div></div>
         </div>`;
     });
     html += renderLetterBlock(data.blocks);
@@ -1074,7 +1132,7 @@ function renderIlyaBlocks(industryKey) {
     const topHtml = renderTopCompanies(industryKey);
     if (topHtml) {
         html += `<div class="script-block collapsed" id="ilya-top">
-            <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">🏢 Топ компаний отрасли</span></span></div>
+            <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">🏢 Топ компаний отрасли</span></span><span class="block-goal">Список крупнейших игроков отрасли для ориентира</span></div>
             <div class="block-body">${topHtml}</div></div>`;
     }
     container.innerHTML = html;
@@ -1137,7 +1195,7 @@ window.toggleBlock = function(header) {
 };
 
 window.copyBlockText = function(blockId) {
-    const block = document.getElementById(`ilya-${blockId === 'B' ? 'B' : blockId}`);
+    const block = document.querySelector(`.script-block[data-block-id="${blockId}"]`);
     if (!block) return;
     const text = block.querySelector('.script-text')?.innerText || '';
     navigator.clipboard.writeText(text).then(() => {
@@ -1232,16 +1290,16 @@ function printScript() {
         const data = industryData[select.value];
         content += `${data.name}\n\n`;
         data.blocks.forEach(b => {
-            content += `${b.title}\n${b.text}\n\n`;
+            content += `${b.title}\n${replacePlaceholders(b.text)}\n\n`;
         });
     } else {
         content += 'Универсальный скрипт\n\n';
         content += 'Проход секретаря\n';
-        vladSecretaryVariants.forEach(v => { content += `${v.lines.map(l => l.text).join('\n')}\n\n`; });
+        vladSecretaryVariants.forEach(v => { content += `${v.lines.map(l => replacePlaceholders(l.text)).join('\n')}\n\n`; });
         content += 'Реакции секретаря\n';
-        vladReactions.forEach(v => { content += `${v.lines.map(l => l.text).join('\n')}\n\n`; });
+        vladReactions.forEach(v => { content += `${v.lines.map(l => replacePlaceholders(l.text)).join('\n')}\n\n`; });
         content += 'Работа с ЛПР\n';
-        vladLprBlocks.forEach(v => { content += `${v.lines.map(l => l.text).join('\n')}\n\n`; });
+        vladLprBlocks.forEach(v => { content += `${v.lines.map(l => replacePlaceholders(l.text)).join('\n')}\n\n`; });
     }
     const w = window.open('', '_blank', 'width=800,height=600');
     w.document.write(`<pre style="white-space: pre-wrap; font-family: Arial; padding: 20px;">${content}</pre>`);
@@ -1310,7 +1368,7 @@ function renderObjections() {
                 html += `<ul class="obj-answer-list">`;
                 const letters = ['а', 'б', 'в', 'г', 'д', 'е'];
                 item.answers.forEach((ans, idx) => {
-                    html += `<li><span class="obj-answer-letter">${letters[idx] || (idx+1)})</span><span class="obj-answer">${ans}</span></li>`;
+                    html += `<li><span class="obj-answer-letter">${letters[idx] || (idx+1)})</span><span class="obj-answer">${replacePlaceholders(ans)}</span></li>`;
                 });
                 html += `</ul>`;
             }
