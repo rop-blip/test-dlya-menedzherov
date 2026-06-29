@@ -175,6 +175,11 @@
         body.dark .hint-container { background: #1e3a5f; }
         .hint-arrow { display: inline-block; width: 0; height: 0; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-left: 20px solid #2b579a; margin-right: 8px; animation: gentle-bounce 2s infinite ease-in-out; }
         @keyframes gentle-bounce { 0%,100% { transform: translateX(0); } 50% { transform: translateX(-6px); } }
+
+        .letter-block { margin-top: 8px; }
+        .letter-block label { display: inline-flex; align-items: center; gap: 6px; margin-right: 20px; cursor: pointer; }
+        .letter-preview { background: #f9f9f9; border: 1px solid #ddd; padding: 12px; border-radius: 4px; white-space: pre-wrap; font-size: 13px; margin-top: 12px; max-height: 300px; overflow-y: auto; }
+        body.dark .letter-preview { background: #1e1e1e; border-color: #444; color: #ccc; }
     </style>
 </head>
 <body>
@@ -190,7 +195,6 @@
                     <h2>📞 Скрипт для отдела продаж "Паркс-инжиниринг"</h2>
                 </div>
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <button class="btn btn-light" onclick="generateLetter()" title="Генератор письма">✉️ Письмо</button>
                     <button class="btn btn-light" onclick="toggleTheme()" title="Тёмная/светлая тема">🌙</button>
                     <div class="hint-container">
                         <span class="hint-arrow"></span>
@@ -285,7 +289,231 @@ const makeGallery = (prefix) => {
     }));
 };
 
-// Общие тултипы по оборудованию и материалам
+// Топ‑20 компаний по отраслям (примерные данные, можно корректировать)
+const top20Data = {
+    pharma: [
+        "ПАО «Фармстандарт» — выручка ~42 млрд руб.",
+        "АО «Р-Фарм» — выручка ~128 млрд руб.",
+        "ПАО «Синтез» — выручка ~38 млрд руб.",
+        "ООО «Биокад» — выручка ~32 млрд руб.",
+        "АО «Верофарм» — выручка ~28 млрд руб.",
+        "ПАО «Валента Фарм» — выручка ~25 млрд руб.",
+        "ООО «НПО Петровакс Фарм» — выручка ~22 млрд руб.",
+        "ЗАО «Эвалар» — выручка ~20 млрд руб.",
+        "ООО «Герофарм» — выручка ~18 млрд руб.",
+        "АО «КРКА-Рус» — выручка ~15 млрд руб.",
+        "ООО «Такеда Фармасьютикалс» — выручка ~14 млрд руб.",
+        "АО «Санофи Россия» — выручка ~13 млрд руб.",
+        "ООО «АстраЗенека Фармасьютикалз» — выручка ~12 млрд руб.",
+        "ООО «Новартис Фарма» — выручка ~11 млрд руб.",
+        "АО «Байер» — выручка ~10 млрд руб.",
+        "ООО «Пфайзер Инновации» — выручка ~9 млрд руб.",
+        "ООО «Берлин-Хеми/А. Менарини» — выручка ~8 млрд руб.",
+        "ООО «Гедеон Рихтер» — выручка ~7 млрд руб.",
+        "АО «Сервье» — выручка ~6 млрд руб.",
+        "ООО «Эбботт Лэбораториз» — выручка ~5 млрд руб."
+    ],
+    packaging: [
+        "Группа «Полипластик» — выручка ~35 млрд руб.",
+        "АО «Роспласт» — выручка ~12 млрд руб.",
+        "ООО «Альфа-Пласт» — выручка ~8 млрд руб.",
+        "ЗАО «Тарапласт» — выручка ~6 млрд руб.",
+        "ООО «Полимербыт» — выручка ~5 млрд руб.",
+        "ООО «ПолиЭР» — выручка ~4.5 млрд руб.",
+        "ООО «Пластмасс Групп» — выручка ~4 млрд руб.",
+        "ООО «Европласт» — выручка ~3.5 млрд руб.",
+        "ООО «РосПак» — выручка ~3 млрд руб.",
+        "ООО «Полимерпак» — выручка ~2.5 млрд руб.",
+        "ООО «Тара.ру» — выручка ~2 млрд руб.",
+        "ООО «Пластик Система» — выручка ~1.8 млрд руб.",
+        "ООО «Балтпласт» — выручка ~1.5 млрд руб.",
+        "ООО «СПб Пласт» — выручка ~1.2 млрд руб.",
+        "ООО «Кубань-Пласт» — выручка ~1 млрд руб.",
+        "ООО «Уралпласт» — выручка ~0.9 млрд руб.",
+        "ООО «Сибирь-Пак» — выручка ~0.8 млрд руб.",
+        "ООО «Дон-Пласт» — выручка ~0.7 млрд руб.",
+        "ООО «Приволжский пластик» — выручка ~0.6 млрд руб.",
+        "ООО «Восток-Пласт» — выручка ~0.5 млрд руб."
+    ],
+    paper_hygiene: [
+        "АО «Архбум» — выручка ~40 млрд руб.",
+        "ООО «Кимберли-Кларк» — выручка ~28 млрд руб.",
+        "ПАО «Сыктывкар Тиссью Групп» — выручка ~22 млрд руб.",
+        "АО «Монди Сыктывкарский ЛПК» — выручка ~55 млрд руб.",
+        "ООО «ЭсСиЭй Хайджин Продактс Раша» — выручка ~18 млрд руб.",
+        "ОАО «Маяк» — выручка ~15 млрд руб.",
+        "ООО «Хаят Россия» — выручка ~12 млрд руб.",
+        "АО «Пролетарий» — выручка ~10 млрд руб.",
+        "ООО «Бумажная Фабрика» — выручка ~8 млрд руб.",
+        "ООО «Котласский ЦБК» — выручка ~7 млрд руб.",
+        "ООО «Кондровская бумажная компания» — выручка ~6 млрд руб.",
+        "ООО «Сухонский КБК» — выручка ~5 млрд руб.",
+        "ООО «Полиграф-Книга» — выручка ~4 млрд руб.",
+        "ООО «Туринский ЦБЗ» — выручка ~3.5 млрд руб.",
+        "ООО «Каменская БКФ» — выручка ~3 млрд руб.",
+        "ООО «Троицкая БФ» — выручка ~2.5 млрд руб.",
+        "ООО «Пермская БФ» — выручка ~2 млрд руб.",
+        "ООО «Ульяновская БФ» — выручка ~1.5 млрд руб.",
+        "ООО «Рязанская БФ» — выручка ~1 млрд руб.",
+        "ООО «Ярославская БФ» — выручка ~0.8 млрд руб."
+    ],
+    instruments: [
+        "ООО «НПП «Эталон» — выручка ~12 млрд руб.",
+        "АО «НИИ измерительных приборов» — выручка ~10 млрд руб.",
+        "ООО «Теккноу» — выручка ~8 млрд руб.",
+        "АО «Радио и связь» — выручка ~6 млрд руб.",
+        "ООО «Прибор-Сервис» — выручка ~5 млрд руб.",
+        "ООО «Микрон» — выручка ~4 млрд руб.",
+        "ООО «Элтекс» — выручка ~3.5 млрд руб.",
+        "ЗАО «СКБ Индукция» — выручка ~3 млрд руб.",
+        "ООО «Лазер-Сервис» — выручка ~2.5 млрд руб.",
+        "ООО «Техно-Прибор» — выручка ~2 млрд руб.",
+        "ООО «Аналитприбор» — выручка ~1.8 млрд руб.",
+        "ООО «Метран» — выручка ~1.5 млрд руб.",
+        "ООО «Измеритель» — выручка ~1.2 млрд руб.",
+        "ООО «Сенсор» — выручка ~1 млрд руб.",
+        "ООО «Прибор-Автоматика» — выручка ~0.9 млрд руб.",
+        "ООО «КИП-Сервис» — выручка ~0.8 млрд руб.",
+        "ООО «Энергоприбор» — выручка ~0.7 млрд руб.",
+        "ООО «Термоприбор» — выручка ~0.6 млрд руб.",
+        "ООО «Лабтех» — выручка ~0.5 млрд руб.",
+        "ООО «Тест-СПб» — выручка ~0.4 млрд руб."
+    ],
+    food: [
+        "ООО «Черкизово» — выручка ~120 млрд руб.",
+        "ПАО «Группа Русагро» — выручка ~180 млрд руб.",
+        "АО «Данон Россия» — выручка ~90 млрд руб.",
+        "ООО «ПепсиКо Холдингс» — выручка ~70 млрд руб.",
+        "ООО «Кока-Кола ЭйчБиСи Евразия» — выручка ~60 млрд руб.",
+        "ПАО «Мираторг» — выручка ~150 млрд руб.",
+        "ООО «Юнимилк» — выручка ~40 млрд руб.",
+        "ООО «Хайнц» — выручка ~35 млрд руб.",
+        "ЗАО «Мултон» — выручка ~30 млрд руб.",
+        "ООО «Фрито Лей Мануфактуринг» — выручка ~25 млрд руб.",
+        "ООО «Марс» — выручка ~22 млрд руб.",
+        "ООО «Нестле Россия» — выручка ~20 млрд руб.",
+        "ООО «Мон'дэлис Русь» — выручка ~18 млрд руб.",
+        "ООО «Келлогг Рус» — выручка ~15 млрд руб.",
+        "ООО «Бондюэль» — выручка ~12 млрд руб.",
+        "ООО «Ашан» — выручка ~10 млрд руб.",
+        "ООО «Макдоналдс» — выручка ~9 млрд руб.",
+        "ООО «Бургер Кинг» — выручка ~8 млрд руб.",
+        "ООО «КФС» — выручка ~7 млрд руб.",
+        "ООО «Сабвэй» — выручка ~6 млрд руб."
+    ],
+    research: [
+        "ФГУП «ЦАГИ» — выручка ~8 млрд руб.",
+        "НИЦ «Курчатовский институт» — выручка ~12 млрд руб.",
+        "АО «ГНЦ РФ — ФЭИ» — выручка ~6 млрд руб.",
+        "ООО «Институт стволовых клеток человека» — выручка ~4 млрд руб.",
+        "АО «НИИ НПО «Луч» — выручка ~3.5 млрд руб.",
+        "ООО «Биотехнологический центр» — выручка ~3 млрд руб.",
+        "ФГБУ «НИЦ эпидемиологии и микробиологии им. Н.Ф. Гамалеи» — выручка ~2.5 млрд руб.",
+        "АО «НИИ полимеров» — выручка ~2 млрд руб.",
+        "ООО «НТ-МДТ» — выручка ~1.8 млрд руб.",
+        "ЗАО «Научные приборы» — выручка ~1.5 млрд руб.",
+        "ООО «Лаборатория Касперского» — выручка ~1.2 млрд руб.",
+        "АО «Институт космических исследований» — выручка ~1 млрд руб.",
+        "ООО «НПО «Орион» — выручка ~0.9 млрд руб.",
+        "ООО «НПП «Старт» — выручка ~0.8 млрд руб.",
+        "ООО «Центр Келдыша» — выручка ~0.7 млрд руб.",
+        "ООО «НИИ Графит» — выручка ~0.6 млрд руб.",
+        "ООО «ВНИИНМ» — выручка ~0.5 млрд руб.",
+        "ООО «НИИЭФА» — выручка ~0.4 млрд руб.",
+        "ООО «НИКИЭТ» — выручка ~0.3 млрд руб.",
+        "ООО «Гиредмет» — выручка ~0.2 млрд руб."
+    ],
+    medical: [
+        "ООО «Медтроник» — выручка ~25 млрд руб.",
+        "АО «Медицинские системы» — выручка ~18 млрд руб.",
+        "ООО «Дрегер» — выручка ~15 млрд руб.",
+        "ООО «Сименс Здравоохранение» — выручка ~12 млрд руб.",
+        "ЗАО «Кардиомедикс» — выручка ~10 млрд руб.",
+        "ООО «Биосенсор» — выручка ~8 млрд руб.",
+        "ООО «Микромед» — выручка ~6 млрд руб.",
+        "ООО «Эскулап» — выручка ~5 млрд руб.",
+        "ООО «Медплант» — выручка ~4 млрд руб.",
+        "ООО «Элепс» — выручка ~3.5 млрд руб.",
+        "ООО «ОртоПроф» — выручка ~3 млрд руб.",
+        "ООО «Дентал-Сервис» — выручка ~2.5 млрд руб.",
+        "ООО «Лабораторный мир» — выручка ~2 млрд руб.",
+        "ООО «Биомедицинские приборы» — выручка ~1.8 млрд руб.",
+        "ООО «Стеримед» — выручка ~1.5 млрд руб.",
+        "ООО «Реабилитик» — выручка ~1.2 млрд руб.",
+        "ООО «Медтехника» — выручка ~1 млрд руб.",
+        "ООО «Инвазия» — выручка ~0.9 млрд руб.",
+        "ООО «Стоматологическая компания» — выручка ~0.8 млрд руб.",
+        "ООО «ЛОР-центр» — выручка ~0.7 млрд руб."
+    ],
+    oil_gas: [
+        "ПАО «Газпром» — выручка ~6.5 трлн руб.",
+        "ПАО «Роснефть» — выручка ~5.2 трлн руб.",
+        "ПАО «Лукойл» — выручка ~4.8 трлн руб.",
+        "ПАО «Сургутнефтегаз» — выручка ~1.5 трлн руб.",
+        "ПАО «Транснефть» — выручка ~1.2 трлн руб.",
+        "ПАО «Татнефть» — выручка ~800 млрд руб.",
+        "ООО «Газпром нефть» — выручка ~2.3 трлн руб.",
+        "ПАО «Башнефть» — выручка ~700 млрд руб.",
+        "ПАО «НОВАТЭК» — выручка ~1.1 трлн руб.",
+        "АО «Зарубежнефть» — выручка ~500 млрд руб.",
+        "ООО «Сахалин Энерджи» — выручка ~300 млрд руб.",
+        "ПАО «РуссНефть» — выручка ~200 млрд руб.",
+        "ООО «Славнефть» — выручка ~150 млрд руб.",
+        "АО «Верхнечонскнефтегаз» — выручка ~100 млрд руб.",
+        "ООО «РН-Уватнефтегаз» — выручка ~80 млрд руб.",
+        "АО «Самотлорнефтегаз» — выручка ~70 млрд руб.",
+        "ООО «Лукойл-Западная Сибирь» — выручка ~60 млрд руб.",
+        "АО «НК «Роснефть»-Ставрополье» — выручка ~50 млрд руб.",
+        "ООО «Газпром добыча Ямбург» — выручка ~40 млрд руб.",
+        "ООО «Газпром добыча Уренгой» — выручка ~30 млрд руб."
+    ],
+    energy: [
+        "ПАО «РусГидро» — выручка ~350 млрд руб.",
+        "ПАО «ФСК ЕЭС» — выручка ~220 млрд руб.",
+        "ПАО «Интер РАО» — выручка ~1.2 трлн руб.",
+        "АО «Концерн Росэнергоатом» — выручка ~400 млрд руб.",
+        "ПАО «Мосэнерго» — выручка ~200 млрд руб.",
+        "ПАО «Т Плюс» — выручка ~150 млрд руб.",
+        "ПАО «Юнипро» — выручка ~100 млрд руб.",
+        "ПАО «Энел Россия» — выручка ~80 млрд руб.",
+        "АО «Атомэнергопром» — выручка ~300 млрд руб.",
+        "ПАО «Квадра» — выручка ~60 млрд руб.",
+        "ПАО «ТГК-1» — выручка ~50 млрд руб.",
+        "ПАО «ТГК-2» — выручка ~40 млрд руб.",
+        "АО «ДГК» — выручка ~30 млрд руб.",
+        "ПАО «Якутскэнерго» — выручка ~25 млрд руб.",
+        "ПАО «Камчатскэнерго» — выручка ~20 млрд руб.",
+        "АО «Сахалинэнерго» — выручка ~15 млрд руб.",
+        "ПАО «Магаданэнерго» — выручка ~10 млрд руб.",
+        "АО «Чукотэнерго» — выручка ~8 млрд руб.",
+        "ПАО «Норникель» — выручка ~1.2 трлн руб.",
+        "АО «ЕвроСибЭнерго» — выручка ~50 млрд руб."
+    ],
+    electronics: [
+        "АО «Российские космические системы» — выручка ~40 млрд руб.",
+        "АО «Концерн «Вега» — выручка ~35 млрд руб.",
+        "ООО «Связь-Инвест» — выручка ~30 млрд руб.",
+        "АО «Электронные системы» — выручка ~25 млрд руб.",
+        "ООО «Теле2» — выручка ~20 млрд руб.",
+        "ПАО «Ростелеком» — выручка ~500 млрд руб.",
+        "ПАО «МТС» — выручка ~450 млрд руб.",
+        "ПАО «ВымпелКом» — выручка ~300 млрд руб.",
+        "ООО «Т2 РТК Холдинг» — выручка ~150 млрд руб.",
+        "АО «ЭР-Телеком Холдинг» — выручка ~80 млрд руб.",
+        "ООО «Яндекс» — выручка ~200 млрд руб.",
+        "ООО «Мэйл.ру» — выручка ~50 млрд руб.",
+        "АО «Концерн «Созвездие» — выручка ~25 млрд руб.",
+        "ООО «НПП «Исток» — выручка ~20 млрд руб.",
+        "АО «НИИ «Полюс» — выручка ~18 млрд руб.",
+        "ООО «Лазер-Сервис» — выручка ~15 млрд руб.",
+        "АО «ОКБ «Факел» — выручка ~12 млрд руб.",
+        "ООО «НПО «Орион» — выручка ~10 млрд руб.",
+        "ООО «Антенная техника» — выручка ~8 млрд руб.",
+        "ЗАО «Радиоэлектроника» — выручка ~6 млрд руб."
+    ]
+};
+
+// Тултипы по оборудованию и материалам
 const equipmentTooltips = {
     'таблетпрессы': 'Машины для прессования порошкообразных смесей в таблетки заданной формы и веса.',
     'линии розлива': 'Автоматизированные линии для розлива жидких препаратов во флаконы или ампулы.',
@@ -309,21 +537,6 @@ const equipmentTooltips = {
     'генераторы': 'Электрические машины для преобразования механической энергии в электрическую.',
     'сборочные линии': 'Автоматизированные конвейерные линии сборки электронных компонентов.',
     'испытательные стенды': 'Стенды для проверки параметров и надёжности электронных устройств.',
-    'фасовочное оборудование': 'Машины для фасовки сыпучих и жидких продуктов в тару.',
-    'смесители': 'Оборудование для смешивания компонентов в фармацевтическом и пищевом производстве.',
-    'грануляторы': 'Машины для получения гранул из порошкообразных материалов.',
-    'капсульные машины': 'Оборудование для наполнения и закрытия твёрдых желатиновых капсул.',
-    'блистерные машины': 'Машины для упаковки таблеток и капсул в блистеры.',
-    'этикетировочные машины': 'Оборудование для нанесения этикеток на упаковку.',
-    'термоусадочные машины': 'Машины для упаковки продукции в термоусадочную плёнку.',
-    'резьбонарезные станки': 'Станки для нарезания резьбы на деталях.',
-    'шлифовальные станки': 'Станки для финишной обработки поверхностей.',
-    'фрезерные станки с ЧПУ': 'Станки для обработки металла и пластика по заданной программе.',
-    'токарные станки с ЧПУ': 'Станки для обработки деталей вращения.',
-    'электроэрозионные станки': 'Станки для обработки токопроводящих материалов электрическими разрядами.',
-    'координатно-измерительные машины': 'Приборы для прецизионного измерения геометрии деталей.',
-    'твердомеры': 'Приборы для измерения твёрдости материалов.',
-    'профилометры': 'Приборы для измерения шероховатости поверхности.',
     'реверс-инжиниринг': 'Изготовление детали по готовому образцу без чертежа. Мы выполняем обмеры, строим 3D-модель и согласовываем КД с заказчиком.',
     'PEEK': 'Высокотемпературный полимер. Выдерживает до +250°C, стоек к радиации и химреагентам. Применяется в медицине и аэрокосмосе.',
     'полиацеталь': 'Прочный, износостойкий пластик с низким коэффициентом трения. Хорошо работает в подвижных узлах.',
@@ -345,21 +558,6 @@ function formatDescription(text) {
     return html;
 }
 
-// Шпаргалка по допускам и материалам (общая)
-const tolerancesCheatSheet = {
-    id: 'cheatsheet',
-    icon: '📝',
-    title: '📝 Шпаргалка по допускам и материалам',
-    goal: 'Типовые значения',
-    text: `• Линейные размеры (валы, отверстия, фланцы): H7/h6, H8/h8, ±0,05 мм
-• Торцевое биение и соосность: 0,01–0,05 мм
-• Шероховатость: Ra 0,4 (полировка), Ra 0,8 (чистовая), Ra 1,6 (получистовая), Ra 3,2 (черновая)
-• Материалы (стали): 40Х, 45, 40Х13, AISI 304/316, 12Х18Н10Т
-• Материалы (пластики): фторопласт, капролон, PEEK, полиацеталь, полиуретан
-• Термообработка: закалка ТВЧ, цементация, азотирование, отжиг
-• Покрытия: цинкование, никелирование, анодирование, порошковая покраска`
-};
-
 // Описания отраслей
 const industryDescriptions = {
     pharma: `<span class="marker">●</span> Основные направления: Производство лекарственных препаратов, фармацевтических субстанций, медицинских материалов и ветеринарных средств.<br><span class="marker">●</span> Оборудование: таблетпрессы, линии розлива, упаковки, лабораторные приборы.<br><span class="marker">●</span> Потребность в деталях: звёздочки, направляющие, корпуса, лапки захвата, валы, втулки, пресс-инструмент, детали дозаторов, калибровочные пластины.`,
@@ -374,7 +572,7 @@ const industryDescriptions = {
     electronics: `<span class="marker">●</span> Основные направления: Радиоэлектронная промышленность, телекоммуникационное оборудование, корпуса, волноводы, антенны, печатные платы.<br><span class="marker">●</span> Оборудование: сборочные линии, испытательные стенды.<br><span class="marker">●</span> Потребность в деталях: корпуса фильтров, волноводы, кронштейны антенн, теплоотводы, основания плат, прецизионные втулки, стойки.`
 };
 
-// Данные отраслевых скриптов
+// Данные отраслевых скриптов с новым блоком-генератором письма
 const industryData = {
     pharma: {
         name: "💊 Фармацевтика",
@@ -754,13 +952,14 @@ function renderIlyaBlocks(industryKey) {
     const data = industryData[industryKey];
     const container = document.getElementById('approachContent');
     let html = '';
-    
-    // Добавляем шпаргалку первой
-    html += `<div class="script-block collapsed" id="ilya-cheatsheet">
-        <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">${tolerancesCheatSheet.title}</span></span><span class="block-goal">${tolerancesCheatSheet.goal}</span></div>
-        <div class="block-body"><div class="script-text">${tolerancesCheatSheet.text}</div></div></div>`;
-    
-    // Затем блоки скрипта
+
+    // Топ‑20 компаний
+    const top20 = top20Data[industryKey] || [];
+    html += `<div class="script-block collapsed" id="top20-block">
+        <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">🏢 Топ-20 компаний отрасли</span></span><span class="block-goal">Топ-20 по выручке</span></div>
+        <div class="block-body"><div class="script-text">${top20.map(c => `• ${c}`).join('\n')}</div></div></div>`;
+
+    // Блоки скрипта
     data.blocks.forEach((b, i) => {
         html += `<div class="script-block collapsed" id="ilya-${i}">
             <div class="block-header" onclick="toggleBlock(this)">
@@ -772,7 +971,22 @@ function renderIlyaBlocks(industryKey) {
             </div>
             <div class="block-body"><div class="script-text">${b.text}</div></div></div>`;
     });
-    
+
+    // Блок-генератор письма
+    html += `<div class="script-block collapsed" id="letter-block">
+        <div class="block-header" onclick="toggleBlock(this)"><span><span class="arrow">▶</span> <span class="block-title">✉️ Генератор письма</span></span><span class="block-goal">Создать письмо</span></div>
+        <div class="block-body">
+            <div class="letter-block">
+                <label><input type="checkbox" checked onchange="updateLetterPreview('${industryKey}')"> Представление</label>
+                <label><input type="checkbox" checked onchange="updateLetterPreview('${industryKey}')"> Привязка к отрасли</label>
+                <label><input type="checkbox" checked onchange="updateLetterPreview('${industryKey}')"> Релевантный пример</label>
+                <label><input type="checkbox" checked onchange="updateLetterPreview('${industryKey}')"> Ценностное предложение</label>
+                <label><input type="checkbox" checked onchange="updateLetterPreview('${industryKey}')"> Призыв к действию</label>
+                <div class="letter-preview" id="letterPreview"></div>
+                <button class="btn btn-light" onclick="copyLetter()">📋 Копировать</button>
+            </div>
+        </div></div>`;
+
     // Галерея
     if (data.gallery && data.gallery.length > 0) {
         html += `<div class="script-block collapsed" id="ilya-gallery">
@@ -781,6 +995,31 @@ function renderIlyaBlocks(industryKey) {
     }
     container.innerHTML = html;
     updateToggleAllButton();
+
+    // Обновить предпросмотр письма после рендера
+    setTimeout(() => updateLetterPreview(industryKey), 50);
+}
+
+function updateLetterPreview(industryKey) {
+    const data = industryData[industryKey];
+    const blocks = data.blocks;
+    const checkboxes = document.querySelectorAll('#letter-block input[type=checkbox]');
+    let letter = 'Здравствуйте!\n\n';
+    if (checkboxes[0].checked) letter += blocks[0].text.replace(/<[^>]*>/g, '') + '\n\n';
+    if (checkboxes[1].checked) letter += blocks[1].text.replace(/<[^>]*>/g, '') + '\n\n';
+    if (checkboxes[2].checked) letter += blocks[2].text.replace(/<[^>]*>/g, '') + '\n\n';
+    if (checkboxes[3].checked) letter += blocks[3].text.replace(/<[^>]*>/g, '') + '\n\n';
+    if (checkboxes[4].checked) letter += blocks[4].text.replace(/<[^>]*>/g, '') + '\n\n';
+    letter += 'С уважением,\n[Имя менеджера]\nКомпания Паркс Инжиниринг';
+    const preview = document.getElementById('letterPreview');
+    if (preview) preview.textContent = letter;
+}
+
+function copyLetter() {
+    const preview = document.getElementById('letterPreview');
+    if (preview) {
+        navigator.clipboard.writeText(preview.textContent).then(() => alert('Письмо скопировано!'));
+    }
 }
 
 function renderApproach(approach) {
@@ -839,302 +1078,6 @@ window.toggleBlock = function(header) {
 };
 
 window.copyBlockText = function(blockId) {
-    let text = '';
-    if (blockId === 'cheatsheet') {
-        text = tolerancesCheatSheet.text;
-    } else {
-        const approach = document.querySelector('.approach-tab.active')?.dataset.approach;
-        if (approach === 'ilya') {
-            const select = document.getElementById('industrySelect');
-            const data = industryData[select.value];
-            const block = data.blocks.find(b => b.id === blockId);
-            if (block) text = block.text;
-        }
-    }
-    if (text) {
-        navigator.clipboard.writeText(text).then(() => {
-            // Визуальная обратная связь — кратковременное изменение иконки
-            const btns = document.querySelectorAll('.copy-btn');
-            btns.forEach(btn => {
-                if (btn.getAttribute('onclick')?.includes(blockId)) {
-                    btn.textContent = '✓';
-                    setTimeout(() => { btn.textContent = '📋'; }, 1500);
-                }
-            });
-        });
-    }
-};
-
-function toggleAllBlocks() {
     const approach = document.querySelector('.approach-tab.active')?.dataset.approach;
-    let blocks;
-    if (approach === 'ilya') {
-        blocks = document.querySelectorAll('#approachContent .script-block');
-    } else {
-        blocks = document.querySelectorAll('#vladContent .script-block');
-    }
-    const anyCollapsed = Array.from(blocks).some(block => block.classList.contains('collapsed'));
-    blocks.forEach(block => {
-        if (anyCollapsed) {
-            block.classList.remove('collapsed');
-            const arrow = block.querySelector('.arrow');
-            if (arrow) arrow.textContent = '▼';
-        } else {
-            block.classList.add('collapsed');
-            const arrow = block.querySelector('.arrow');
-            if (arrow) arrow.textContent = '▶';
-        }
-    });
-    updateToggleAllButton();
-}
-
-function updateToggleAllButton() {
-    const approach = document.querySelector('.approach-tab.active')?.dataset.approach;
-    let blocks;
-    if (approach === 'ilya') {
-        blocks = document.querySelectorAll('#approachContent .script-block');
-    } else {
-        blocks = document.querySelectorAll('#vladContent .script-block');
-    }
-    const anyCollapsed = Array.from(blocks).some(block => block.classList.contains('collapsed'));
-    const icon = document.getElementById('toggleAllIcon');
-    const text = document.getElementById('toggleAllText');
-    if (icon && text) {
-        if (anyCollapsed) {
-            icon.textContent = '⇵';
-            text.textContent = 'Развернуть всё';
-        } else {
-            icon.textContent = '⇅';
-            text.textContent = 'Свернуть всё';
-        }
-    }
-}
-
-// Лайтбокс
-function openLightboxImage(src) {
-    document.getElementById('lightboxImg').src = src;
-    document.getElementById('lightbox').classList.add('show');
-}
-
-function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('show');
-    document.getElementById('lightboxImg').src = '';
-}
-
-document.getElementById('lightbox').addEventListener('click', function(e) {
-    if (e.target === this) closeLightbox();
-});
-
-// Тема
-function toggleTheme() {
-    document.body.classList.toggle('dark');
-    const btn = document.querySelector('.header-row .btn-light');
-    if (btn) btn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
-    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
-}
-
-(function() {
-    if (localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark');
-        const btn = document.querySelector('.header-row .btn-light');
-        if (btn) btn.textContent = '☀️';
-    }
-})();
-
-// Печать
-function printScript() {
-    const approach = document.querySelector('.approach-tab.active')?.dataset.approach;
-    let content = '';
     if (approach === 'ilya') {
         const select = document.getElementById('industrySelect');
-        const data = industryData[select.value];
-        content += `${data.name}\n\n`;
-        data.blocks.forEach(b => {
-            content += `${b.title}\n${b.text}\n\n`;
-        });
-    } else {
-        content += 'Универсальный скрипт\n\n';
-        content += 'Проход секретаря\n';
-        vladSecretaryVariants.forEach(v => { content += `${v.lines.map(l => l.text).join('\n')}\n\n`; });
-        content += 'Реакции секретаря\n';
-        vladReactions.forEach(v => { content += `${v.lines.map(l => l.text).join('\n')}\n\n`; });
-        content += 'Работа с ЛПР\n';
-        vladLprBlocks.forEach(v => { content += `${v.lines.map(l => l.text).join('\n')}\n\n`; });
-    }
-    const w = window.open('', '_blank', 'width=800,height=600');
-    w.document.write(`<pre style="white-space: pre-wrap; font-family: Arial; padding: 20px;">${content}</pre>`);
-    w.document.close();
-}
-
-// Генератор письма
-function generateLetter() {
-    const approach = document.querySelector('.approach-tab.active')?.dataset.approach;
-    let blocks = [];
-    
-    if (approach === 'ilya') {
-        const select = document.getElementById('industrySelect');
-        blocks = industryData[select.value].blocks;
-    } else {
-        // Для универсального скрипта собираем все блоки в одном окне
-        blocks = [
-            { id: 'direct', title: 'Представление', text: vladSecretaryVariants[0].lines[0].text },
-            { id: 'B', title: 'Привязка', text: vladLprBlocks[0].lines[0].text },
-            { id: 'C', title: 'Пример', text: '' },
-            { id: 'D', title: 'Ценность', text: vladLprBlocks[2].lines[0].text },
-            { id: 'E', title: 'Призыв', text: vladLprBlocks[3].lines[0].text }
-        ];
-    }
-    
-    // Показываем диалог выбора блоков
-    let blockList = blocks.map((b, i) => `  ${i+1}. ${b.goal || b.title}`).join('\n');
-    let selected = prompt(`Выберите блоки для письма (через запятую, например 1,2,4):\n\n${blockList}`, '1,2,3,4,5');
-    
-    if (!selected) return;
-    
-    let indices = selected.split(',').map(s => parseInt(s.trim()) - 1).filter(i => i >= 0 && i < blocks.length);
-    if (indices.length === 0) return;
-    
-    let letter = 'Здравствуйте!\n\n';
-    indices.forEach(i => {
-        let text = blocks[i].text.replace(/<[^>]*>/g, ''); // убираем HTML-теги
-        letter += text + '\n\n';
-    });
-    letter += 'С уважением,\n[Имя менеджера]\nКомпания Паркс Инжиниринг';
-    
-    navigator.clipboard.writeText(letter).then(() => {
-        alert('Письмо скопировано в буфер обмена!');
-    });
-}
-
-// Панель возражений с поиском и группировкой
-const overlay = document.getElementById('overlay');
-const panel = document.getElementById('objPanel');
-const toggleFullscreenBtn = document.getElementById('toggleFullscreenBtn');
-let isFullscreen = false;
-
-document.getElementById('openPanelBtn').onclick = () => {
-    panel.classList.add('open');
-    panel.classList.remove('fullscreen');
-    isFullscreen = false;
-    overlay.classList.add('show');
-    renderObjections();
-};
-
-document.getElementById('closePanelBtn').onclick = () => {
-    panel.classList.remove('open', 'fullscreen');
-    overlay.classList.remove('show');
-    isFullscreen = false;
-};
-overlay.onclick = () => {
-    panel.classList.remove('open', 'fullscreen');
-    overlay.classList.remove('show');
-    isFullscreen = false;
-};
-
-toggleFullscreenBtn.onclick = () => {
-    isFullscreen = !isFullscreen;
-    if (isFullscreen) {
-        panel.classList.add('fullscreen');
-        overlay.classList.add('show');
-    } else {
-        panel.classList.remove('fullscreen');
-    }
-};
-
-function renderObjections() {
-    const search = (document.getElementById('objSearch').value || '').toLowerCase();
-    let html = '';
-    html += `<div class="obj-quick-links">`;
-    objections.forEach((group, index) => {
-        const visible = group.items.some(item => {
-            return item.q.toLowerCase().includes(search) || item.answers.some(a => a.toLowerCase().includes(search));
-        });
-        if (!search || visible) {
-            html += `<span class="obj-quick-link" data-group-index="${index}">${group.group}</span>`;
-        }
-    });
-    html += `</div>`;
-
-    objections.forEach((group, index) => {
-        const filteredItems = group.items.filter(item => {
-            return !search || item.q.toLowerCase().includes(search) || item.answers.some(a => a.toLowerCase().includes(search));
-        });
-        if (filteredItems.length === 0 && search) return;
-        html += `<div class="obj-group collapsed" data-group-index="${index}">`;
-        html += `<div class="obj-group-title"><span>${group.group}</span><span class="group-arrow">▶</span></div>`;
-        html += `<div class="obj-group-content">`;
-        filteredItems.forEach(item => {
-            html += `<div class="obj-item"><div class="obj-question">${item.q}</div>`;
-            if (item.answers && item.answers.length > 0) {
-                html += `<ul class="obj-answer-list">`;
-                const letters = ['а', 'б', 'в', 'г', 'д', 'е'];
-                item.answers.forEach((ans, idx) => {
-                    html += `<li><span class="obj-answer-letter">${letters[idx] || (idx+1)})</span><span class="obj-answer">${ans}</span></li>`;
-                });
-                html += `</ul>`;
-            }
-            html += `</div>`;
-        });
-        html += `</div></div>`;
-    });
-    document.getElementById('objContent').innerHTML = html;
-
-    document.querySelectorAll('.obj-group-title').forEach(title => {
-        title.addEventListener('click', function(e) {
-            const group = this.parentElement;
-            group.classList.toggle('expanded');
-        });
-    });
-    document.querySelectorAll('.obj-quick-link').forEach(link => {
-        link.addEventListener('click', function(e) {
-            const index = this.dataset.groupIndex;
-            const group = document.querySelector(`.obj-group[data-group-index="${index}"]`);
-            if (group) {
-                document.querySelectorAll('.obj-group').forEach(g => g.classList.remove('expanded'));
-                group.classList.add('expanded');
-                group.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
-    });
-}
-
-// Обновление описания отрасли при выборе
-document.getElementById('industrySelect').addEventListener('change', function() {
-    const desc = industryDescriptions[this.value] || '';
-    document.getElementById('industryDescription').innerHTML = formatDescription(desc);
-    if (document.querySelector('.approach-tab.active')?.dataset.approach === 'ilya') {
-        renderIlyaBlocks(this.value);
-    }
-    localStorage.setItem('lastIndustry', this.value);
-});
-
-document.getElementById('approachTabs').addEventListener('click', e => {
-    if (e.target.classList.contains('approach-tab')) {
-        document.querySelectorAll('#approachTabs .approach-tab').forEach(t => t.classList.remove('active'));
-        e.target.classList.add('active');
-        renderApproach(e.target.dataset.approach);
-        if (e.target.dataset.approach === 'ilya') {
-            const select = document.getElementById('industrySelect');
-            document.getElementById('industryDescription').innerHTML = formatDescription(industryDescriptions[select.value] || '');
-        } else {
-            document.getElementById('industryDescription').innerHTML = '';
-        }
-    }
-});
-
-document.addEventListener('click', e => {
-    if (e.target.classList.contains('switch-tab') && e.target.dataset.vladTab) {
-        document.querySelectorAll('#vladTabs .switch-tab').forEach(t => t.classList.remove('active'));
-        e.target.classList.add('active');
-        renderVladTab(e.target.dataset.vladTab);
-    }
-});
-
-// Старт
-const lastIndustry = localStorage.getItem('lastIndustry') || 'pharma';
-document.getElementById('industrySelect').value = lastIndustry;
-document.getElementById('industryDescription').innerHTML = formatDescription(industryDescriptions[lastIndustry] || '');
-renderApproach('ilya');
-</script>
-</body>
-</html>
